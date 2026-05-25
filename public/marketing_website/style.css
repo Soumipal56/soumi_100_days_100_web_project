@@ -62,7 +62,6 @@ html {
     background-color: #16213e;
     background-size: cover;
     background-position: center;
-<<<<<<< HEAD
     color: white;
     padding: 120px 0;
     position: relative;
@@ -78,62 +77,10 @@ html {
 .hero-section .container {
     position: relative;
     z-index: 1;
-=======
-    color: #ffffff;
-    padding: 120px 0;
-}
-
-.hero-section h1 {
-    font-size: 2.8rem;
-    font-weight: 700;
-    color: #ffffff;
-    margin-bottom: 16px;
-    line-height: 1.2;
-    letter-spacing: -0.5px;
-}
-
-.hero-section p {
-    font-size: 1.05rem;
-    color: rgba(255, 255, 255, 0.7);
-    margin-bottom: 36px;
-}
-
-.hero-section .btn-primary {
-    background-color: #4361ee;
-    border: none;
-    padding: 12px 28px;
-    font-weight: 600;
-    font-size: 0.88rem;
-    border-radius: 6px;
-    margin-right: 10px;
-    transition: background 0.2s, transform 0.1s;
-}
-
-.hero-section .btn-primary:hover {
-    background-color: #3451d1;
-    transform: translateY(-1px);
-}
-
-.hero-section .btn-secondary {
-    background-color: transparent;
-    border: 1.5px solid rgba(255, 255, 255, 0.4);
-    color: #fff;
-    padding: 12px 28px;
-    font-weight: 600;
-    font-size: 0.88rem;
-    border-radius: 6px;
-    transition: all 0.2s;
-}
-
-.hero-section .btn-secondary:hover {
-    background-color: rgba(255, 255, 255, 0.08);
-    border-color: rgba(255, 255, 255, 0.7);
->>>>>>> upstream/Main
 }
 
 /* Services Section */
 .services-section {
-<<<<<<< HEAD
     background: linear-gradient(to bottom, #f8f9fa, #eef3f8);
     padding: 70px 0;
 }
@@ -185,88 +132,6 @@ html {
     font-weight: 600;
     min-height: 65px;
     margin-bottom: 14px;
-=======
-    background-color: #f8f8f8;
-    padding: 80px 0;
-}
-
-.services-section h2 {
-    font-size: 1.9rem;
-    font-weight: 700;
-    color: #111;
-    margin-bottom: 12px;
-}
-
-.services-section .container>p {
-    color: #777;
-    font-size: 0.95rem;
-    margin-bottom: 48px;
-}
-
-.service-box {
-    padding: 32px 24px;
-    background: #ffffff;
-    margin: 10px 0;
-    border-radius: 10px;
-    border: 1px solid #ebebeb;
-    transition: transform 0.2s, box-shadow 0.2s;
-    height: 100%;
-}
-
-.service-box:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.07);
-}
-
-.service-icon {
-    width: 52px;
-    height: 52px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 20px;
-    font-size: 1.4rem;
-}
-
-.icon-blue {
-    background-color: #e8edff;
-    color: #4361ee;
-}
-
-.icon-green {
-    background-color: #e6f4ea;
-    color: #2d8a4e;
-}
-
-.icon-orange {
-    background-color: #fff3e0;
-    color: #e07b00;
-}
-
-.service-box h3 {
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 10px;
-    color: #111;
-}
-
-.service-box h3 a {
-    color: #111;
-    text-decoration: none;
-    transition: color 0.2s;
-}
-
-.service-box h3 a:hover {
-    color: #4361ee;
-}
-
-.service-box p {
-    font-size: 0.88rem;
-    color: #777;
-    line-height: 1.7;
-    margin: 0;
->>>>>>> upstream/Main
 }
 
 .service-box h3 a {
@@ -297,7 +162,6 @@ html {
 }
 /* Footer */
 .footer-section {
-<<<<<<< HEAD
     background-color: #222;
     color: #fff;
     padding: 50px 0 25px;
@@ -308,25 +172,10 @@ html {
     font-size: 1.2rem;
     margin-bottom: 15px;
     font-weight: 600;
-=======
-    background-color: #1a1a2e;
-    color: #ccc;
-    padding: 48px 0 24px;
-}
-
-.footer-section h5 {
-    font-size: 0.78rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: #ffffff;
-    margin-bottom: 16px;
->>>>>>> upstream/Main
 }
 
 .footer-section p,
 .footer-section a {
-<<<<<<< HEAD
     color: #d1d1d1;
     margin: 0;
     line-height: 1.8;
@@ -336,18 +185,6 @@ html {
 .footer-section a:hover {
     color: #007bff;
     text-decoration: none;
-=======
-    color: #888;
-    margin: 0;
-    font-size: 0.88rem;
-    line-height: 1.8;
-    text-decoration: none;
-    transition: color 0.2s;
-}
-
-.footer-section a:hover {
-    color: #ffffff;
->>>>>>> upstream/Main
 }
 
 .footer-divider {
