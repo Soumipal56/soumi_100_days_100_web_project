@@ -1,3 +1,18 @@
+improve-footer-ui
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body{
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+    background-color: #fafafa;
+    color: #222;
+}
+
+a{
 * {
   box-sizing: border-box;
 }
@@ -12,6 +27,18 @@ a {
   text-decoration: none;
 }
 
+improve-footer-ui
+img{
+    max-width: 100%;
+    display: block;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+header{
+=======
 header {
   padding: 10px 20px;
   border-bottom: 1px solid #e2e2e2;
@@ -24,23 +51,101 @@ header {
   align-items: center;
   justify-content: space-between;
 }
+
+.utility-links span{
+
+.header-content {
+Main
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.utility-links span:hover{
+    color: #fc2779;
+}
+
+/* HEADER CONTENT */
+
+.header-content{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+}
+
 header .left,
 header .right {
   display: flex;
   align-items: center;
   gap: 30px;
 }
+
+/* LOGO */
+
+header .logo img{
+    width: 155px;
+    transition: 0.3s ease;
+    cursor: pointer;
+}
+
+header .logo img:hover{
+    transform: scale(1.04);
+}
+improve-footer-ui
+
+/* NAVIGATION */
+
+.nav ul{
+
 .nav ul {
   padding: 0;
   list-style: none;
   display: flex;
   gap: 30px;
 }
+improve-footer-ui
+
+.nav ul li{
+    position: relative;
+    font-size: 17px;
+    font-weight: 600;
+
 .nav ul li {
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
 }
+
+.nav ul li::after{
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -6px;
+    width: 0%;
+    height: 2px;
+    background: #fc2779;
+    transition: 0.3s ease;
+}
+improve-footer-ui
+
+.nav ul li:hover{
+    color: #fc2779;
+}
+
+.nav ul li:hover::after{
+    width: 100%;
+}
+
+/* SEARCH BAR */
+
+.inputSearch{
+    background: #f5f5f7;
+    border-radius: 8px;
+    padding: 10px 14px;
+
 .nav ul li:hover {
   color: #ee356c;
 }
@@ -51,6 +156,23 @@ header .right {
   display: flex;
   align-items: center;
 }
+
+.inputSearch:hover{
+    background: #fff;
+    border: 1px solid #fc2779;
+}
+
+.inputSearch i{
+    color: #777;
+}
+improve-footer-ui
+
+.inputSearch input{
+    border: none;
+    outline: none;
+    background: transparent;
+    margin-left: 10px;
+
 .inputSearch input {
   background: transparent;
   border: none;
@@ -60,12 +182,34 @@ header .right {
   width: 100%;
   max-width: 700px;
 }
+improve-footer-ui
+
+/* ACCOUNT LINKS */
+
+.accountLink{
+
 .accountLink {
   display: flex;
   align-items: center;
   gap: 7px;
   font-weight: 500;
 }
+
+improve-footer-ui
+.accountLink i{
+    font-size: 18px;
+}
+
+.accountLink:hover{
+    color: #fc2779;
+    transform: translateY(-2px);
+}
+
+/* =========================
+   SUB NAVIGATION
+========================= */
+
+.subNavigation{
 
 .subNavigation {
   font-size: 13px;
@@ -74,6 +218,39 @@ header .right {
   display: flex;
   gap: 20px;
 }
+improve-footer-ui
+
+.subNavigation::-webkit-scrollbar{
+    display: none;
+}
+
+.subNavigation ul{
+    display: flex;
+    list-style: none;
+    gap: 22px;
+    align-items: center;
+}
+
+.subNavigation ul li{
+    position: relative;
+    cursor: pointer;
+    font-size: 14px;
+    white-space: nowrap;
+    transition: 0.3s;
+}
+
+.subNavigation ul li:hover{
+    color: #fc2779;
+}
+
+/* DROPDOWN */
+
+.sub-navigatin-nav{
+    position: absolute;
+    top: 35px;
+    left: 0;
+    background: white;
+
 .subNavigation ul {
   display: flex;
   padding: 0;
@@ -105,10 +282,23 @@ header .right {
   z-index: 100;
   display: none;
 }
+improve-footer-ui
+
+.subNavigation li:hover .sub-navigatin-nav{
+=======
 .sub-navigatin-nav-Image {
   display: flex;
   flex-direction: column;
 }
+improve-footer-ui
+
+.sub-navigatin-nav p{
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.sub-navigatin-nav-Image{
+=======
 .sub-navigatin-nav p {
   font-weight: 500;
 }
@@ -126,6 +316,108 @@ header .right {
   display: flex;
   flex-direction: column;
 }
+improve-footer-ui
+
+.sub-navigatin-nav-Image img{
+    width: 120px;
+    border-radius: 10px;
+    transition: 0.3s;
+}
+
+.sub-navigatin-nav-Image img:hover{
+    transform: scale(1.04);
+}
+
+/* =========================
+   CATEGORY SECTION
+========================= */
+
+.categorySection{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 25px;
+    padding: 30px 20px;
+    background: white;
+}
+
+.categorySection img{
+    width: 110px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.4s ease;
+}
+
+.categorySection img:hover{
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 10px 25px rgba(252,39,121,0.18);
+}
+
+/* =========================
+   SLIDER SECTION
+========================= */
+
+.slideCategory{
+    position: relative;
+    padding: 30px 20px;
+}
+
+.bgpink{
+    background: linear-gradient(to right,#ffe3ec,#ffd6b5);
+}
+
+.slideCategory-Image{
+    display: flex;
+    gap: 18px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+}
+
+.slideCategory-Image::-webkit-scrollbar{
+    display: none;
+}
+
+.slideCategory-Image img{
+    border-radius: 18px;
+    transition: 0.4s;
+}
+
+.slideCategory-Image img:hover{
+    transform: scale(1.04);
+}
+
+/* BUTTONS */
+
+.btn_container{
+    position: absolute;
+    width: 95%;
+    display: flex;
+    justify-content: space-between;
+    top: 45%;
+    z-index: 10;
+}
+
+.btn_container button{
+    width: 55px;
+    height: 55px;
+    border: none;
+    border-radius: 50%;
+    background: white;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: 0.3s;
+}
+
+.btn_container button:hover{
+    background: #fc2779;
+    color: white;
+    transform: scale(1.08);
+}
+
+/* =========================
+   PRODUCT SECTIONS
+========================= */
 .sub-navigatin-nav .col a {
   padding: 7px;
 }
@@ -196,6 +488,7 @@ header .right {
   height: auto;
   display: block;
 }
+ Main
 
 .listofProduct,
 .brandTopproduct,

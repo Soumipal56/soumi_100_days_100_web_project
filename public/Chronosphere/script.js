@@ -314,6 +314,8 @@ function applyFilters() {
     }
     el.style.display = visible ? "" : "none";
   });
+
+  requestAnimationFrame(resizeParticlesCanvas);
 }
 
 // UI wiring

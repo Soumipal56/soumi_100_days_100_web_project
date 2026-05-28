@@ -26,6 +26,10 @@ body {
   min-height: 100%;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
   min-height: 100vh;
   display: flex;
@@ -225,6 +229,10 @@ body::before {
   transform: scale(1.45);
 }
 
+/* =========================
+   CURSOR DESIGNS
+========================= */
+
 body[data-cursor="ring"] .cursor {
   height: 30px;
   width: 30px;
@@ -280,6 +288,10 @@ body[data-cursor="crosshair"] .cursor::after {
   border-color: rgba(var(--accent-two-rgb), 0.85);
 }
 
+/* =========================
+   CONTENT
+========================= */
+
 .content {
   position: relative;
   z-index: 5;
@@ -302,6 +314,10 @@ body[data-cursor="crosshair"] .cursor::after {
   font-size: 1rem;
   line-height: 1.6;
 }
+
+/* =========================
+   PICKERS
+========================= */
 
 .cursor-picker {
   position: relative;
@@ -499,6 +515,10 @@ body[data-cursor="crosshair"] .cursor::after {
   transform: translateY(-50%);
 }
 
+/* =========================
+   THEMES
+========================= */
+
 body[data-theme="aurora"] {
   --page-bg: #03130f;
   --accent: #7dffca;
@@ -572,6 +592,20 @@ body[data-theme="firefly"] {
     width: 100%;
     min-width: 0;
   }
+}
+
+/* =========================
+   ANIMATIONS
+========================= */
+
+@keyframes cursor {
+    0% {
+        filter: hue-rotate(0deg);
+    }
+
+    100% {
+        filter: hue-rotate(360deg);
+    }
 }
 
 @keyframes cursor-sparkle {

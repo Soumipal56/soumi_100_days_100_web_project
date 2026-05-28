@@ -148,77 +148,21 @@ async function sendMessage() {
   chatMessages.scrollTop = chatMessages.scrollHeight;
 
   try {
-    const response = await fetch(
-      "https://api.groq.com/openai/v1/chat/completions",
-      {
-        method: "POST",
-
-        headers: {
-          "Content-Type": "application/json",
-
-          Authorization: `Bearer ${GROQ_API_KEY}`,
-        },
-
-        body: JSON.stringify({
-          model: "llama-3.1-8b-instant",
-
-          messages: [
-            {
-              role: "system",
-
-              content: `You are Travel AI, a modern and friendly travel assistant.
-
-Help users with:
-- travel destinations
-- trip planning
-- flights
-- hotels
-- budgeting
-- tourism
-- itineraries
-- local food
-- attractions
-- travel tips
-
-Response Rules:
-- Use short paragraphs
-- Use bullet points when useful
-- Keep responses clean and readable
-- Avoid huge text blocks
-- Give practical suggestions
-- Use friendly conversational tone
-- Format itineraries clearly
-- Use emojis occasionally for better UX
-
-Keep answers concise but informative.`,
-            },
-
-            {
-              role: "user",
-              content: message,
-            },
-          ],
-        }),
+    const response = await fetch("http://localhost:5000/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify({ message: message }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
     const data = await response.json();
 
     loadingMessage.remove();
-
-    // HANDLE API ERROR
-
-    if (!data.choices) {
-      const errorMessage = document.createElement("div");
-
-      errorMessage.classList.add("bot-message");
-
-      errorMessage.textContent = "Unable to get response right now.";
-
-      chatMessages.appendChild(errorMessage);
-
-      return;
-    }
 
     // BOT RESPONSE
 
@@ -226,7 +170,7 @@ Keep answers concise but informative.`,
 
     botMessage.classList.add("bot-message");
 
-    botMessage.innerHTML = formatResponse(data.choices[0].message.content);
+    botMessage.innerHTML = formatResponse(data.reply);
 
     chatMessages.appendChild(botMessage);
 
@@ -236,7 +180,7 @@ Keep answers concise but informative.`,
   } catch (error) {
     loadingMessage.textContent = "Error getting response.";
 
-    console.error(error);
+    console.error("Frontend Error:", error);
   }
 }
 
@@ -252,13 +196,17 @@ userInput.addEventListener("keypress", (e) => {
   }
 });
 
-if (tabSignIn && tabSignUp && formSignInContainer && formSignUpContainer) {
-  tabSignIn.addEventListener("click", () => {
-    tabSignIn.classList.add("active");
-    tabSignUp.classList.remove("active");
-    formSignInContainer.classList.add("active");
-    formSignUpContainer.classList.remove("active");
-  });
+// ==========================================================================
+// AUTHENTICATION ENGINE CONTROLLER (#3793)
+// ==========================================================================
+const AuthController = {
+  // Elements targeting our updated DOM structural layouts
+  signUpBtn: document.getElementById("signUpBtn"),
+  authModal: document.getElementById("authModal"),
+  closeModalBtn: document.getElementById("closeModalBtn"),
+  signUpForm: document.getElementById("signUpForm"),
+  emailInput: document.getElementById("regEmail"),
+  passwordInput: document.getElementById("regPassword"),
 
   tabSignUp.addEventListener("click", () => {
     tabSignUp.classList.add("active");

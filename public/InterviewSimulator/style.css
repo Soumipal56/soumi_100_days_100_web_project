@@ -28,9 +28,14 @@
 }
 
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    transition: background-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
+                border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
+                color 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
@@ -58,14 +63,24 @@ body {
     );
 }
 
-/* Ambient Background Blobs for ultra-premium feel */
 .blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(100px);
-  z-index: -1;
-  opacity: 0.5;
-  animation: float-blob 12s infinite alternate ease-in-out;
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(140px);
+    z-index: 0;
+    opacity: 0.45;
+    pointer-events: none;
+}
+.blob-1 { top: -15%; left: -10%; width: 600px; height: 600px; background: rgba(124, 99, 255, 0.22); }
+.blob-2 { bottom: -15%; right: -10%; width: 700px; height: 700px; background: rgba(59, 130, 246, 0.18); }
+.blob-3 { top: 35%; left: 45%; width: 500px; height: 500px; background: rgba(168, 85, 247, 0.12); }
+
+.container {
+    max-width: 1140px;
+    margin: 90px auto 50px auto;
+    width: 90%;
+    position: relative;
+    z-index: 10;
 }
 
 .blob-1 {
@@ -133,31 +148,31 @@ body {
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--glass-border);
-  border-radius: 16px;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 24px;
 }
 
 .glass-card:hover {
-  background: rgba(255, 255, 255, 0.06);
-  transform: translateY(-4px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
-  border-color: rgba(255, 255, 255, 0.2);
+    border-color: var(--border-hover);
 }
 
-.container {
-  width: 100%;
-  max-width: 1050px;
-  padding: 25px;
-  z-index: 1;
-}
-
-/* Typography & Headers */
 .top-bar {
-  margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    margin-bottom: 36px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 28px;
+}
+
+@media screen and (min-width: 993px) {
+    .top-bar {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
 }
 
 .top-bar h1 {
@@ -175,50 +190,36 @@ body {
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
-.top-bar h1 i {
-  color: #60a5fa;
-  -webkit-text-fill-color: initial;
-  filter: drop-shadow(0 0 10px rgba(96, 165, 250, 0.5));
-}
-
-/* Stats Cards */
 .stats {
-  display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    width: 100%;
 }
 
-.card {
-  padding: 16px;
-  flex: 1;
-  min-width: 200px;
-  display: flex;
-  flex-direction: column;
+@media screen and (min-width: 993px) {
+    .stats {
+        width: 65%;
+    }
 }
 
 .card-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.card-header span {
-  color: var(--text-muted);
-  font-size: 14px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 700;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .card h2 {
-  font-family: var(--font-heading);
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  color: #fff;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+    letter-spacing: -0.01em;
 }
 
 .progress-bar-container {
@@ -600,29 +601,13 @@ textarea::placeholder {
   }
 }
 
-/* =========================================
-   AI INTERVIEW PREMIUM UI UPGRADE
-========================================= */
-
-/* Role Selection Panel */
-
-.role-selection {
-  margin-bottom: 24px;
-  padding: 24px;
-}
-
-.role-selection h3 {
-  font-size: 22px;
-  margin-bottom: 20px;
-  font-family: var(--font-heading);
-  font-weight: 700;
-  color: white;
-}
+/* ==================================}
 
 .role-controls {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) auto;
+    gap: 20px;
+    align-items: center;
 }
 
 .role-controls select {
@@ -837,21 +822,100 @@ textarea {
 }
 
 .btn {
-  min-width: 170px;
-  height: 54px;
-  border-radius: 14px;
-  font-size: 15px;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 16px 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    white-space: nowrap;
 }
 
-/* Avatar Enhancement */
+.primary-btn {
+    background: var(--primary-gradient);
+    color: #fff;
+    box-shadow: 0 4px 20px var(--accent-glow);
+}
+
+.primary-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(124, 99, 255, 0.4);
+}
+
+.primary-btn:active {
+    transform: translateY(0);
+}
+
+.secondary-btn {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+}
+
+:root[data-theme="light"] .secondary-btn {
+    background: rgba(0, 0, 0, 0.02);
+}
+
+.secondary-btn:hover {
+    background: var(--card-hover);
+    border-color: var(--text-muted);
+}
+
+.interview-box {
+    margin-top: 32px;
+}
+
+.interviewer {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 28px;
+    margin-bottom: 32px;
+}
+
+.avatar-container {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: 0;
+    flex-shrink: 0;
+}
 
 .avatar {
-  width: 84px;
-  height: 84px;
-  font-size: 36px;
+    background: var(--primary-gradient);
+    border-radius: 50%;
+    color: #fff;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    z-index: 2;
+    position: relative;
+    box-shadow: 0 8px 24px var(--accent-glow);
 }
 
-/* Dialogue */
+.pulse-ring {
+    border: 2px solid #7c63ff;
+    border-radius: 50%;
+    position: absolute;
+    top: -4px; left: -4px; right: -4px; bottom: -4px;
+    animation: pulse 2.5s infinite cubic-bezier(0.4, 0, 0.6, 1);
+    opacity: 0;
+    z-index: 1;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.98); opacity: 0.8; }
+    70% { transform: scale(1.25); opacity: 0; }
+    100% { transform: scale(1.25); opacity: 0; }
+}
 
 .dialogue {
   padding: 24px;
@@ -929,13 +993,130 @@ textarea {
   padding-bottom: 10px;
 }
 
-/* Better textarea */
+.chat-message {
+    padding: 20px 24px;
+    border-radius: 20px;
+    line-height: 1.65;
+    max-width: 90%;
+    font-size: 1.05rem;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.bot-message {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-top-left-radius: 4px;
+    color: var(--text-main);
+}
+
+.entry-animation {
+    animation: fadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.answer-section {
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.voice-controls {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: rgba(0, 0, 0, 0.08);
+    padding: 10px 18px;
+    border-radius: 100px;
+    width: fit-content;
+    border: 1px solid var(--border-color);
+}
+
+:root[data-theme="light"] .voice-controls {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.mic-btn {
+    border: none;
+    background: var(--card-bg);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.mic-btn.recording {
+    background: var(--danger-color);
+    color: #fff;
+    border-color: transparent;
+    animation: micPulse 1.8s infinite ease-in-out;
+}
+
+@keyframes micPulse {
+    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+    70% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+.mic-status {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-muted);
+}
+
+.recording-indicator {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.recording-indicator .dot {
+    width: 6px;
+    height: 6px;
+    background: var(--danger-color);
+    border-radius: 50%;
+    animation: jump 1.2s infinite ease-in-out both;
+}
+.recording-indicator .dot:nth-child(1) { animation-delay: -0.32s; }
+.recording-indicator .dot:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes jump {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+    40% { transform: scale(1.2); opacity: 1; }
+}
 
 textarea {
   font-size: 16px;
 }
 
-/* Better button alignment */
+textarea:focus {
+    border-color: #7c63ff;
+    background-color: var(--card-hover);
+    box-shadow: 0 0 0 4px var(--input-focus);
+}
+
+.counter-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -4px;
+}
+
+.char-counter {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-muted);
+}
 
 .buttons {
   align-items: center;

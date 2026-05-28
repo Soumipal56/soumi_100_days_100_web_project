@@ -11,6 +11,22 @@ body {
   overflow-x: hidden;
 }
 
+/* Project Back Button */
+.project-back-button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background-color: darkgreen;
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  font-family: Inter, system-ui, sans-serif;
+  box-shadow: 0 8px 20px rgba(12, 18, 40, 0.35);
+}
+
+.project-back-button:hover {
+  background-color: #15803d;
+  box-shadow: 0 12px 30px rgba(12, 18, 40, 0.45);
+}
 /* NAVBAR */
 .navbar {
   width: 100%;
@@ -831,3 +847,12 @@ body.dark-mode .text-gray-600,
 body.dark-mode .text-gray-500 {
   color: #f3f4f6 !important;
 }
+
+@keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-25px); }
+    }
+
+    .float {
+      animation: float 8s ease-in-out infinite;
+    }

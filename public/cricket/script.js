@@ -2,26 +2,35 @@ let score;
 let scorestr = localStorage.getItem("SCORE");
 resetscore(scorestr);
 
-function resetscore(scorestr) {
-  // Explicitly reset the score to 0 if no score is stored in localStorage
+// --- FIXED LOGIC FOR INITIAL LOAD ---
+// If a score exists in localStorage, parse it. Otherwise, initialize a fresh one.
+if (scorestr) {
+  score = JSON.parse(scorestr);
+  // Re-attach the display function to the parsed object
+  score.display_results = function () {
+    return `<br>Won: ${score.win/2}<br><span style="color:red"> Lost: ${score.lost/2}</span><br> Tie: ${score.tie/2} <br> <span style="color:purple;">Total Games: ${score.win/2 + score.lost/2 + score.tie/2}</span>`;
+  };
+} else {
+  resetscore();
+}
+
+function resetscore() {
+  // Explicitly reset the score to 0
   score = {
     win: 0,
     lost: 0,
     tie: 0,
   };
-
   score.display_results = function () {
     return `<br>Won: ${score.win / 2}<br><span style="color:red"> Lost: ${score.lost / 2}</span><br>
     Tie: ${score.tie / 2} <br> <span style="color:purple;">Total Games: ${score.win / 2 + score.lost / 2 + score.tie / 2}</span>`;
   };
-
   // Save the reset score back to localStorage
   localStorage.setItem("SCORE", JSON.stringify(score));
 }
 
 function computergeneratechoice() {
   let randomnum = Math.random() * 3;
-
   if (randomnum > 0 && randomnum <= 1) {
     return "Bat";
   } else if (randomnum > 1 && randomnum <= 2) {
@@ -87,7 +96,6 @@ function getresult(usermove, cmpchoice) {
       resultMessage = `User won.`;
     }
   }
-
   return `<span style="color:gold">${resultMessage}</span>`;
 }
 

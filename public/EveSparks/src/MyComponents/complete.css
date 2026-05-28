@@ -90,9 +90,10 @@ body.dark {
 }
 
 .horizontal-list {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 24px;
+  align-items: stretch;
 }
 
 .horizontal-info-card {
@@ -108,6 +109,11 @@ body.dark {
   gap: 20px;
 
   border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.horizontal-info-card .modern-btn {
+  margin-top: auto;
+  align-self: flex-start;
 }
 
 .info-content {

@@ -143,9 +143,40 @@ function stopTimer() {
   clearInterval(timerInterval);
 }
 
+// ── Preview Countdown ─────────────────────────────────────
+ 
+/**
+ * Count down from 3 seconds while cards are face-up, then auto-start.
+ * The Start button label reflects the countdown and acts as a skip.
+ */
+function startPreviewCountdown() {
+  let countdown = 3;
+  startBtn.textContent = `Skip Preview (${countdown})`;
+ 
+  previewInterval = setInterval(() => {
+    countdown--;
+ 
+    if (countdown > 0) {
+      startBtn.textContent = `Skip Preview (${countdown})`;
+    } else {
+      // Countdown finished — auto-start the game
+      clearInterval(previewInterval);
+      previewInterval = null;
+      startGame();
+    }
+  }, 1000);
+}
+
 // ── Game Start ────────────────────────────────────────────
+
 function setupPreview() {
   const cfg = DIFFICULTIES[difficulty];
+
+  // Cancel any running preview countdown or game timer
+  if (previewInterval) {
+     clearInterval(previewInterval);
+     previewInterval = null;
+  }
 
   stopTimer();
   winModal.classList.remove("visible");
@@ -166,6 +197,9 @@ function setupPreview() {
 
   pairsEl.textContent = `0/${cfg.pairs}`;
   progressEl.style.width = "0%";
+
+  hintBtn.disabled    = true;
+  hintBtn.textContent = 'Hint';
 
   updateGridClass();
   updateBestDisplay();
@@ -195,6 +229,7 @@ function setupPreview() {
     grid.appendChild(card);
     cards.push(card);
   });
+  startPreviewCountdown();
 }
 /**
  * Initialise and start a fresh game
@@ -208,6 +243,10 @@ function startGame() {
 
   gameActive = true;
   lockBoard = false;
+
+  startBtn.textContent = 'New Game';
+  hintBtn.disabled     = false;
+  hintBtn.textContent  = 'Hint';
 
   startTimer();
 }

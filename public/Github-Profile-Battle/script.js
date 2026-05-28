@@ -39,6 +39,14 @@ const DOM = {
   shareStats: $("#shareStats"),
 };
 
+const SHARE_ACTION_BUTTONS = [
+    DOM.copyCardBtn,
+    DOM.downloadCardBtn,
+    DOM.shareCardBtn,
+].filter(Boolean);
+
+let toastTimer;
+
 // ===== Particle Background =====
 function initParticles() {
   const canvas = DOM.particleCanvas;
@@ -270,6 +278,25 @@ function formatNum(n) {
   return n.toString();
 }
 
+function showToast(message) {
+    if (!DOM.toast) {
+        alert(message);
+        return;
+    }
+
+    DOM.toast.textContent = message;
+    DOM.toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => DOM.toast.classList.remove('show'), 2800);
+}
+
+function setShareButtonsDisabled(disabled) {
+    SHARE_ACTION_BUTTONS.forEach((btn) => {
+        btn.disabled = disabled;
+        btn.setAttribute('aria-busy', String(disabled));
+    });
+}
+
 // ===== Render Stat Bars =====
 function renderStatBars(s1, s2) {
   const categories = [
@@ -490,6 +517,51 @@ function renderShareCard(s1, s2, score1, score2) {
     `;
 }
 
+function waitForShareCardImages(card) {
+    const images = [...card.querySelectorAll('img')];
+    return Promise.all(
+        images.map((img) => {
+            if (img.complete && img.naturalWidth > 0) return Promise.resolve();
+            return new Promise((resolve) => {
+                img.addEventListener('load', resolve, { once: true });
+                img.addEventListener('error', resolve, { once: true });
+            });
+        })
+    );
+}
+
+function canvasToBlob(canvas) {
+    return new Promise((resolve, reject) => {
+        canvas.toBlob((blob) => {
+            blob ? resolve(blob) : reject(new Error('Failed to generate image'));
+        }, 'image/png');
+    });
+}
+
+async function createShareCardCanvas() {
+    const card = $('#shareCard');
+    if (!card || typeof html2canvas === 'undefined') {
+        throw new Error('Failed to generate image');
+    }
+
+    await waitForShareCardImages(card);
+
+    // Centralized capture keeps copy, download, and share output identical.
+    return html2canvas(card, {
+        backgroundColor: '#0f172a',
+        scale: Math.max(2, window.devicePixelRatio || 1),
+        useCORS: true,
+        allowTaint: false,
+        imageTimeout: 15000,
+        logging: false,
+    });
+}
+
+async function createShareCardBlob() {
+    const canvas = await createShareCardCanvas();
+    return canvasToBlob(canvas);
+}
+
 // ===== Battle Flow =====
 async function startBattle() {
   const u1 = DOM.player1Input.value.trim();
@@ -646,6 +718,84 @@ function resetBattle() {
   DOM.errorMsg.textContent = "";
   DOM.player1Input.focus();
   window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+// ===== Share Card Actions =====
+async function copyCardAsImage() {
+    setShareButtonsDisabled(true);
+    try {
+        if (!navigator.clipboard?.write || typeof ClipboardItem === 'undefined') {
+            showToast('Image copy is not supported on this browser');
+            return;
+        }
+
+        const blob = await createShareCardBlob();
+        await navigator.clipboard.write([
+            new ClipboardItem({
+                'image/png': blob,
+            }),
+        ]);
+        showToast('Image copied successfully');
+    } catch (err) {
+        showToast(err.message || 'Failed to generate image');
+    } finally {
+        setShareButtonsDisabled(false);
+    }
+}
+
+async function downloadCardImage() {
+    setShareButtonsDisabled(true);
+    try {
+        const canvas = await createShareCardCanvas();
+        const image = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+
+        link.href = image;
+        link.download = 'battle-result.png';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        showToast('Download started');
+    } catch (err) {
+        showToast(err.message || 'Failed to generate image');
+    } finally {
+        setShareButtonsDisabled(false);
+    }
+}
+
+async function shareCardImage() {
+    setShareButtonsDisabled(true);
+    try {
+        if (!navigator.share) {
+            showToast('Sharing not supported on this browser');
+            return;
+        }
+
+        const blob = await createShareCardBlob();
+        const file = new File([blob], 'battle-result.png', { type: 'image/png' });
+        const shareData = {
+            files: [file],
+            title: 'GitHub Profile Battle',
+            text: 'Check out this GitHub battle result!',
+        };
+
+        if (navigator.canShare && !navigator.canShare({ files: [file] })) {
+            showToast('Sharing not supported on this browser');
+            return;
+        }
+
+        await navigator.share(shareData);
+    } catch (err) {
+        if (err.name !== 'AbortError') {
+            showToast(
+                err.name === 'TypeError'
+                    ? 'Sharing not supported on this browser'
+                    : err.message || 'Failed to generate image'
+            );
+        }
+    } finally {
+        setShareButtonsDisabled(false);
+    }
 }
 
 // ===== Event Listeners =====

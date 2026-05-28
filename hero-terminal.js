@@ -297,7 +297,7 @@ function FaultyTerminal({
       navigator.maxTouchPoints > 0 ||
       window.matchMedia("(pointer: coarse)").matches);
   // Cap max canvas size to avoid mobile GPU memory issues (e.g., 2048x2048)
-  const MAX_CANVAS_SIZE = 2048;
+  const MAX_CANVAS_SIZE = 8192;
 
   const handleMouseMove = useCallback((event) => {
     const container = containerRef.current;

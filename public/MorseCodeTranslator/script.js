@@ -113,6 +113,20 @@ const decodeFromMorse = (morse) => {
   return decoded.join(" ");
 };
 
+
+const buildOutputSpans = (morseText) => {
+  const output = el('output');
+  output.innerHTML = '';
+  morseText.split(' ').forEach((tok, i, arr) => {
+    const span = document.createElement('span');
+    span.className   = 'morse-token';
+    span.dataset.idx = i;
+    span.textContent = tok;
+    output.appendChild(span);
+    if (i < arr.length - 1) output.appendChild(document.createTextNode(' '));
+  });
+};
+
 const translate = () => {
   const input = el("input").value;
   el("char-count").textContent = input.length;
@@ -131,7 +145,7 @@ const clearInput = () => {
   el("char-count").textContent = "0";
 };
 
-// ── Copy ──────────────────────────────────────────────────────────
+
 
 const copyOutput = () => {
   const text = el("output").textContent;
@@ -250,6 +264,19 @@ const setPlayState = (playing) => {
   }
 };
 
+// ──  highlight/clear helpers for visual playback ──────────────
+const highlightToken = (idx) => {
+  document.querySelectorAll('.morse-token').forEach((s, i) => {
+    s.classList.toggle('active-token', i === idx);
+  });
+};
+
+const clearHighlight = () => {
+  document.querySelectorAll('.morse-token')
+    .forEach(s => s.classList.remove('active-token'));
+};
+
+
 const togglePlay = async () => {
   if (isPlaying) {
     stopFlag = true;
@@ -269,7 +296,7 @@ const togglePlay = async () => {
   const wordGap = dot * 7;
 
   const ctx = getCtx();
-  stopFlag = false;
+  stopFlag  = false;
   setPlayState(true);
 
   const tokens = morseText.split(" ");
@@ -293,11 +320,14 @@ const togglePlay = async () => {
     }
   }
 
+  clearHighlight(); 
   stopFlag = false;
   setPlayState(false);
 };
 
 // ── Reference table ───────────────────────────────────────────────
+// Each ref-item is now clickable — inserts char into input.
+// Only addEventListener added.
 
 const buildRefTable = () => {
   const table = el("ref-table");
@@ -315,6 +345,23 @@ const buildRefTable = () => {
 
     item.appendChild(charEl);
     item.appendChild(codeEl);
+
+    // NEW: click inserts character (encode mode) or morse (decode mode)
+    item.addEventListener('click', () => {
+      const inputEl = el('input');
+      if (mode === 'encode') {
+        inputEl.value += char;
+      } else {
+        const current = inputEl.value;
+        inputEl.value = current
+          ? current.trimEnd() + ' ' + MORSE_MAP[char]
+          : MORSE_MAP[char];
+      }
+      inputEl.dispatchEvent(new Event('input'));
+      inputEl.focus();
+      showToast(`Inserted "${char}"`);
+    });
+
     table.appendChild(item);
   }
 };
@@ -326,6 +373,29 @@ const toggleRef = () => {
   const open = table.classList.toggle("open");
   btn.setAttribute("aria-expanded", open);
   arrow.textContent = open ? "▴" : "▾";
+};
+
+// ──  Swap panels ──────────────────────────────────────────────
+// Moves output → input and flips mode.
+const swapPanels = () => {
+  const outputText = el('output').textContent;
+  if (!outputText || outputText === '—') return;
+
+  const newMode = mode === 'encode' ? 'decode' : 'encode';
+  mode = newMode;
+
+  el('encode-btn').classList.toggle('active', mode === 'encode');
+  el('decode-btn').classList.toggle('active', mode === 'decode');
+  el('input-label').textContent  = mode === 'encode' ? 'Text' : 'Morse Code';
+  el('output-label').textContent = mode === 'encode' ? 'Morse Code' : 'Text';
+  el('input').placeholder = mode === 'encode'
+    ? 'Type your message...'
+    : 'Enter Morse code — space between letters, / between words...';
+
+  el('input').value            = outputText;
+  el('char-count').textContent = outputText.length;
+  el('input').dispatchEvent(new Event('input'));
+  showToast('Panels swapped!');
 };
 
 // ── Init ──────────────────────────────────────────────────────────
