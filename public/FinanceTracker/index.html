@@ -7,7 +7,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Personal Finance Tracker</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <link rel="icon" href="../favv.png" type="image/x-icon" />
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
@@ -1033,7 +1032,6 @@
       </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
       // =================== ORIGINAL CODE ===================
       let transactions = JSON.parse(localStorage.getItem("transactions")) || [];
@@ -1149,6 +1147,7 @@
             }
           }
         });
+      });
 
         const labels = Object.keys(categories);
         const data = Object.values(categories);
@@ -1370,41 +1369,20 @@
                         <span class="goal-status-badge ${badgeClass}">${badgeText}</span>
                     </div>
 
-                    <div class="goal-progress-circle">
-                        <div class="circular-progress">
-                            <svg viewBox="0 0 100 100" width="100" height="100">
-                                <circle class="track" cx="50" cy="50" r="${radius}"/>
-                                <circle class="fill" cx="50" cy="50" r="${radius}"
-                                    stroke="${strokeColor}"
-                                    stroke-dasharray="${circumference}"
-                                    stroke-dashoffset="${dashOffset}"
-                                />
-                            </svg>
-                            <div class="percent-text">${pct.toFixed(0)}%</div>
-                        </div>
-                    </div>
+      function renderGoals() {
+        const container = document.getElementById("goals");
 
-                    <div class="goal-progress-bar-wrap">
-                        <div class="goal-progress-label">
-                            <span>$${goal.saved.toFixed(2)} saved</span>
-                            <span>$${goal.target.toFixed(2)} target</span>
-                        </div>
-                        <div class="goal-progress-bar">
-                            <div class="goal-progress-fill ${fillClass}" style="width:${pct}%"></div>
-                        </div>
-                    </div>
+        container.innerHTML = "";
 
-                    <div class="goal-amounts">
-                        <span class="saved">💰 Saved: $${goal.saved.toFixed(2)}</span>
-                        <span class="remaining">🏁 Left: $${remaining.toFixed(2)}</span>
-                    </div>
+        goals.forEach((goal) => {
+          const percent = (goal.saved / goal.amount) * 100;
 
                     <div class="goal-meta">
                         <span>📅 Target: ${goal.targetDate}</span>
                         <span>${days > 0 ? `⏳ ${days} days left` : days === 0 ? "🔔 Due today!" : `⚠️ ${Math.abs(days)} days overdue`}</span>
                     </div>
 
-                    ${alertHTML}
+        <div class="goal-card">
 
                     <div class="goal-actions">
                         ${status !== "completed" ? `<button class="btn-contribute" onclick="openContributeModal('${goal.id}')">+ Add Contribution</button>` : ""}

@@ -266,6 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Please specify a duration greater than 0 seconds.");
       return;
     }
+  }
 
     isPaused = false;
     pausebtn.innerText = "Pause";
