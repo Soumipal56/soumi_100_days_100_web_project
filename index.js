@@ -562,6 +562,53 @@ let sortOption = "default";
 let techStackFilter = "all";
 let difficultyFilter = "all";
 
+function syncStateToURL() {
+  const url = new URL(window.location);
+  
+  if (searchQuery) {
+    url.searchParams.set('search', searchQuery);
+  } else {
+    url.searchParams.delete('search');
+  }
+
+  if (activeFilter && activeFilter !== 'all') {
+    url.searchParams.set('category', activeFilter);
+  } else {
+    url.searchParams.delete('category');
+  }
+
+  if (currentPage > 1) {
+    url.searchParams.set('page', currentPage);
+  } else {
+    url.searchParams.delete('page');
+  }
+
+  window.history.replaceState({}, '', url);
+}
+
+function readStateFromURL() {
+  const urlParams = new URLSearchParams(window.location.search);
+  
+  if (urlParams.has('search')) {
+    searchQuery = urlParams.get('search');
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+      searchInput.value = searchQuery;
+    }
+  }
+  
+  if (urlParams.has('category')) {
+    activeFilter = urlParams.get('category');
+  }
+  
+  if (urlParams.has('page')) {
+    const page = parseInt(urlParams.get('page'), 10);
+    if (!isNaN(page) && page > 0) {
+      currentPage = page;
+    }
+  }
+}
+
 function renderGrid() {
   const grid = document.getElementById("projectGrid");
   const noResults = document.getElementById("noResults");
@@ -672,6 +719,8 @@ function renderGrid() {
   });
   grid.appendChild(fragment);
   renderPagination(filtered.length, totalPages);
+  
+  syncStateToURL();
 }
 
 function renderPagination(totalItems, totalPages) {
@@ -1083,6 +1132,77 @@ document.addEventListener("click", (e) => {
 });
 
 /* ============================================================
+   CLEAR ALL FILTERS SYSTEM
+   ============================================================ */
+function updateClearFiltersBtnVisibility() {
+  const btn = document.getElementById('clearAllFiltersBtn');
+  if (!btn) return;
+
+  const input = document.getElementById('searchInput');
+  const techStack = document.getElementById('techStackFilter');
+  const difficultyElement = document.getElementById('difficultyFilter');
+
+  const hasSearch = input && input.value.trim() !== '';
+  const hasTech = techStack && techStack.value !== 'all';
+  const hasDiff = difficultyElement && difficultyElement.value !== 'all';
+  const hasCategory = activeFilter && activeFilter !== 'all';
+
+  if (hasSearch || hasTech || hasDiff || hasCategory) {
+    btn.style.display = 'inline-flex';
+  } else {
+    btn.style.display = 'none';
+  }
+}
+
+function resetAllFilters() {
+  // 1. Reset Category filter chips
+  const chips = document.querySelectorAll('.chip[data-filter]');
+  chips.forEach((c) => c.classList.remove('active'));
+  const allChip = document.getElementById('filterAll') || document.querySelector('.chip[data-filter="all"]');
+  if (allChip) allChip.classList.add('active');
+  activeFilter = 'all';
+
+  // 2. Clear Search input
+  const input = document.getElementById('searchInput');
+  if (input) input.value = '';
+  searchQuery = '';
+
+  // 3. Reset Tech Stack dropdown select
+  const techStack = document.getElementById('techStackFilter');
+  if (techStack) techStack.value = 'all';
+  techStackFilter = 'all';
+
+  // 4. Reset Difficulty dropdown select
+  const difficultyElement = document.getElementById('difficultyFilter');
+  if (difficultyElement) difficultyElement.value = 'all';
+  difficultyFilter = 'all';
+
+  // 5. Reset Sorting to default
+  const sortSelect = document.getElementById('sortProjects');
+  if (sortSelect) sortSelect.value = 'default';
+  sortOption = 'default';
+
+  // 6. Sync URL
+  if (typeof updateURL === 'function') {
+    updateURL('', 'all');
+  }
+
+  // 7. Refresh grid and pagination
+  currentPage = 1;
+  renderGrid();
+  syncProjectCounts();
+
+  showToast('Filters cleared!');
+}
+
+function initClearAllFilters() {
+  const btn = document.getElementById('clearAllFiltersBtn');
+  if (btn) {
+    btn.addEventListener('click', resetAllFilters);
+  }
+}
+
+/* ============================================================
    FILTER CHIPS
    ============================================================ */
 function initFilterChips() {
@@ -1167,7 +1287,9 @@ function initTechStackSearch() {
 
   if (!input) return;
 
-  let debounceTimer;
+  // Use the shared debounce utility instead of a manual inline timer
+  input.addEventListener('input', debounce((e) => {
+    const value = e.target.value.trim().toLowerCase();
 
   input.addEventListener("input", (e) => {
     clearTimeout(debounceTimer);
@@ -1326,7 +1448,7 @@ function updateNavbar() {
       window.username = null;
       localStorage.removeItem("loggedInUser");
       updateNavbar();
-    });
+      });
   } else {
     container.innerHTML = `
             ${themeButton}
@@ -1334,8 +1456,11 @@ function updateNavbar() {
             <a class="btn btn-ghost btn-sm" href="https://github.com/dhairyagothi/100_days_100_web_project" target="_blank">
                 <i class="fab fa-github"></i> GitHub
             </a>
-            <a class="btn btn-ghost btn-sm" href="https://www.github-readme.tech" target="_blank">Generate README</a>
-            <a class="btn btn-primary btn-sm" href="${base}public/Login.html">Sign in</a>
+          <a class="btn btn-ghost btn-sm" href="https://www.github-readme.tech" target="_blank">Generate README</a>
+           <div class="auth-buttons">
+           <a class="btn btn-ghost btn-sm" href="${base}public/Login.html">Sign Up</a>
+           <a class="btn btn-primary btn-sm" href="${base}public/Login.html">Sign In</a>
+          </div>
         `;
   }
 }
@@ -1452,6 +1577,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initSearch();
   initSorting();
   initTechStackSearch();
+  initClearAllFilters();
 
   try {
     // Await the projects to be fetched
@@ -1858,7 +1984,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const { category } = getQueryParams();
       updateURL(searchInput.value, category);
       applyFilters(searchInput.value, category);
-    });
+    }, 200));
   }
   const categoryFilter = document.getElementById("category");
   if (categoryFilter) {
