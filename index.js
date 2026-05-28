@@ -293,8 +293,9 @@ function normalizeTech(tech) {
 }
 
 /**
- * Check if project matches the active tech stack filters
- * EFFICIENT APPROACH: Direct string matching without complex transformations
+ * Check if project matches the active tech stack filters.
+ * Each filter must match a complete tag token, not a substring of another tag.
+ * Example: searching "java" must not return projects tagged "javascript".
  * @param {string|array} projectTags - Project tags (space-separated string or array)
  * @returns {boolean} True if project matches all active filters
  */
@@ -1035,7 +1036,7 @@ function renderRecentProjects() {
       tags,
       category,
       isBookmarked,
-      showDescription: false,
+      showDescription: true,
     });
 
     card.className = sourceOnly ? "project-card source-only" : "project-card";
