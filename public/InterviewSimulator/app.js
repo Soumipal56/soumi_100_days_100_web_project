@@ -3,7 +3,7 @@ const questions = [
   "Why should we hire you?",
   "What are your strengths and weaknesses?",
   "Explain a challenging project you worked on.",
-  "Where do you see yourself in 5 years?"
+  "Where do you see yourself in 5 years?",
 ];
 
 let selectedRole = "";
@@ -16,60 +16,42 @@ let userAnswers = [];
 
 const totalTime = 60;
 
-const questionCount =
-  document.getElementById("question-count");
+const questionCount = document.getElementById("question-count");
 
-const stressLevel =
-  document.getElementById("stress-level");
+const stressLevel = document.getElementById("stress-level");
 
-const timerText =
-  document.getElementById("timer");
+const timerText = document.getElementById("timer");
 
-const answerBox =
-  document.getElementById("answer");
+const answerBox = document.getElementById("answer");
 
-const nextBtn =
-  document.getElementById("next-btn");
+const nextBtn = document.getElementById("next-btn");
 
-const restartBtn =
-  document.getElementById("restart-btn");
+const restartBtn = document.getElementById("restart-btn");
 
-const roleSelect =
-  document.getElementById("role-select");
+const roleSelect = document.getElementById("role-select");
 
-const startAiBtn =
-  document.getElementById("start-ai-btn");
+const startAiBtn = document.getElementById("start-ai-btn");
 
-const difficultySelect =
-  document.getElementById("difficulty-select");
+const difficultySelect = document.getElementById("difficulty-select");
 
-const interviewType =
-  document.getElementById("interview-type");
+const interviewType = document.getElementById("interview-type");
 
-const chatContainer =
-  document.getElementById("chat-container");
+const chatContainer = document.getElementById("chat-container");
 
-const questionProgress =
-  document.getElementById("question-progress");
+const questionProgress = document.getElementById("question-progress");
 
-const stressProgress =
-  document.getElementById("stress-progress");
+const stressProgress = document.getElementById("stress-progress");
 
-const timerProgress =
-  document.getElementById("timer-progress");
+const timerProgress = document.getElementById("timer-progress");
 
-const micBtn =
-  document.getElementById("mic-btn");
+const micBtn = document.getElementById("mic-btn");
 
-const micStatus =
-  document.getElementById("mic-status");
+const micStatus = document.getElementById("mic-status");
 
-const recordingIndicator =
-  document.getElementById("recording-indicator");
+const recordingIndicator = document.getElementById("recording-indicator");
 
 const SpeechRecognition =
-  window.SpeechRecognition ||
-  window.webkitSpeechRecognition;
+  window.SpeechRecognition || window.webkitSpeechRecognition;
 
 let recognition;
 
@@ -78,15 +60,11 @@ let isRecording = false;
 let finalTranscriptState = "";
 
 function addAIMessage(message) {
+  const msg = document.createElement("div");
 
-  const msg =
-    document.createElement("div");
+  msg.className = "ai-message";
 
-  msg.className =
-    "ai-message";
-
-  msg.innerHTML =
-    `
+  msg.innerHTML = `
       <div class="message-label">
         🤖 AI Interviewer
       </div>
@@ -98,21 +76,15 @@ function addAIMessage(message) {
 
   chatContainer.appendChild(msg);
 
-  chatContainer.scrollTop =
-    chatContainer.scrollHeight;
-
+  chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
 function addUserMessage(message) {
+  const msg = document.createElement("div");
 
-  const msg =
-    document.createElement("div");
+  msg.className = "user-message";
 
-  msg.className =
-    "user-message";
-
-  msg.innerHTML =
-    `
+  msg.innerHTML = `
       <div class="message-label">
         👤 You
       </div>
@@ -124,24 +96,17 @@ function addUserMessage(message) {
 
   chatContainer.appendChild(msg);
 
-  chatContainer.scrollTop =
-    chatContainer.scrollHeight;
-
+  chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
 function addThinkingMessage() {
+  const msg = document.createElement("div");
 
-  const msg =
-    document.createElement("div");
+  msg.className = "thinking-message";
 
-  msg.className =
-    "thinking-message";
+  msg.id = "thinking-message";
 
-  msg.id =
-    "thinking-message";
-
-  msg.innerHTML =
-    `
+  msg.innerHTML = `
       <div class="message-label">
         🤖 AI Interviewer
       </div>
@@ -153,37 +118,25 @@ function addThinkingMessage() {
 
   chatContainer.appendChild(msg);
 
-  chatContainer.scrollTop =
-    chatContainer.scrollHeight;
-
+  chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
 function removeThinkingMessage() {
-
-  const thinking =
-    document.getElementById(
-      "thinking-message"
-    );
+  const thinking = document.getElementById("thinking-message");
 
   if (thinking) {
     thinking.remove();
   }
-
 }
 
 async function generateAIQuestions() {
+  selectedRole = roleSelect.value;
 
-  selectedRole =
-    roleSelect.value;
+  const difficulty = difficultySelect.value;
 
-  const difficulty =
-    difficultySelect.value;
+  const type = interviewType.value;
 
-  const type =
-    interviewType.value;
-
-  startAiBtn.innerHTML =
-    "Generating...";
+  startAiBtn.innerHTML = "Generating...";
 
   startAiBtn.disabled = true;
 
@@ -192,36 +145,25 @@ async function generateAIQuestions() {
   addThinkingMessage();
 
   try {
-
     const response = await fetch(
       "https://api.groq.com/openai/v1/chat/completions",
       {
-
         method: "POST",
 
         headers: {
+          "Content-Type": "application/json",
 
-          "Content-Type":
-            "application/json",
-
-          "Authorization":
-            `Bearer ${GROQ_API_KEY}`
-
+          Authorization: `Bearer ${GROQ_API_KEY}`,
         },
 
         body: JSON.stringify({
-
-          model:
-            "llama-3.1-8b-instant",
+          model: "llama-3.1-8b-instant",
 
           messages: [
-
             {
-
               role: "system",
 
-              content:
-`You are a professional interviewer conducting a realistic ${type} interview for a ${selectedRole} role.
+              content: `You are a professional interviewer conducting a realistic ${type} interview for a ${selectedRole} role.
 
 Difficulty level: ${difficulty}
 
@@ -242,33 +184,24 @@ Rules:
 - Focus on realistic interviews
 - One question per line
 - No numbering
-- No explanations`
-
-            }
-
-          ]
-
-        })
-
-      }
+- No explanations`,
+            },
+          ],
+        }),
+      },
     );
 
-    const data =
-      await response.json();
+    const data = await response.json();
 
     removeThinkingMessage();
 
-    const content =
-      data.choices[0].message.content;
+    const content = data.choices[0].message.content;
 
-    aiQuestions =
-      content
-      .split("\n")
-      .filter(q => q.trim() !== "");
+    aiQuestions = content.split("\n").filter((q) => q.trim() !== "");
 
     questions.length = 0;
 
-    aiQuestions.forEach(q => {
+    aiQuestions.forEach((q) => {
       questions.push(q);
     });
 
@@ -282,32 +215,20 @@ Rules:
 
     loadQuestion();
 
-    startAiBtn.innerHTML =
-      "Interview Ready";
-
-  }
-
-  catch(error) {
-
+    startAiBtn.innerHTML = "Interview Ready";
+  } catch (error) {
     removeThinkingMessage();
 
     console.error(error);
 
-    alert(
-      "Failed to generate AI questions."
-    );
+    alert("Failed to generate AI questions.");
 
-    startAiBtn.innerHTML =
-      "Start AI Interview";
-
+    startAiBtn.innerHTML = "Start AI Interview";
   }
-
 }
 
 if (SpeechRecognition) {
-
-  recognition =
-    new SpeechRecognition();
+  recognition = new SpeechRecognition();
 
   recognition.continuous = true;
 
@@ -316,228 +237,133 @@ if (SpeechRecognition) {
   recognition.lang = "en-US";
 
   recognition.onstart = () => {
-
     isRecording = true;
 
-    micBtn.classList.add(
-      "recording"
-    );
+    micBtn.classList.add("recording");
 
-    micStatus.innerText =
-      "Listening...";
+    micStatus.innerText = "Listening...";
 
-    recordingIndicator.classList.remove(
-      "hidden"
-    );
+    recordingIndicator.classList.remove("hidden");
 
     answerBox.focus();
-
   };
 
-  recognition.onresult =
-    (event) => {
+  recognition.onresult = (event) => {
+    let interimTranscript = "";
 
-      let interimTranscript = "";
+    let currentFinal = "";
 
-      let currentFinal = "";
+    for (let i = event.resultIndex; i < event.results.length; i++) {
+      const transcript = event.results[i][0].transcript;
 
-      for (
-        let i = event.resultIndex;
-        i < event.results.length;
-        i++
-      ) {
-
-        const transcript =
-          event.results[i][0].transcript;
-
-        if (
-          event.results[i].isFinal
-        ) {
-
-          currentFinal +=
-            transcript + " ";
-
-        }
-
-        else {
-
-          interimTranscript +=
-            transcript;
-
-        }
-
+      if (event.results[i].isFinal) {
+        currentFinal += transcript + " ";
+      } else {
+        interimTranscript += transcript;
       }
+    }
 
-      finalTranscriptState +=
-        currentFinal;
+    finalTranscriptState += currentFinal;
 
-      answerBox.value =
-        finalTranscriptState +
-        interimTranscript;
-
-    };
+    answerBox.value = finalTranscriptState + interimTranscript;
+  };
 
   recognition.onend = () => {
-
     stopRecording();
-
   };
-
 }
 
 function stopRecording() {
-
-  if (
-    isRecording &&
-    recognition
-  ) {
-
+  if (isRecording && recognition) {
     recognition.stop();
-
   }
 
   isRecording = false;
 
-  micBtn.classList.remove(
-    "recording"
-  );
+  micBtn.classList.remove("recording");
 
-  micStatus.innerText =
-    "Click mic to speak";
+  micStatus.innerText = "Click mic to speak";
 
-  recordingIndicator.classList.add(
-    "hidden"
-  );
-
+  recordingIndicator.classList.add("hidden");
 }
 
-micBtn.addEventListener(
-  "click",
-  () => {
+micBtn.addEventListener("click", () => {
+  if (!SpeechRecognition) {
+    alert("Speech Recognition is not supported.");
 
-    if (!SpeechRecognition) {
-
-      alert(
-        "Speech Recognition is not supported."
-      );
-
-      return;
-
-    }
-
-    if (isRecording) {
-
-      stopRecording();
-
-    }
-
-    else {
-
-      finalTranscriptState =
-        answerBox.value;
-
-      if (
-        finalTranscriptState.length > 0 &&
-        !finalTranscriptState.endsWith(" ")
-      ) {
-
-        finalTranscriptState += " ";
-
-      }
-
-      recognition.start();
-
-    }
-
+    return;
   }
-);
+
+  if (isRecording) {
+    stopRecording();
+  } else {
+    finalTranscriptState = answerBox.value;
+
+    if (
+      finalTranscriptState.length > 0 &&
+      !finalTranscriptState.endsWith(" ")
+    ) {
+      finalTranscriptState += " ";
+    }
+
+    recognition.start();
+  }
+});
 
 function startTimer() {
+  timer = setInterval(() => {
+    timeLeft--;
 
-  timer =
-    setInterval(() => {
+    timerText.innerText = `${timeLeft}s`;
 
-      timeLeft--;
+    let timePercent = (timeLeft / totalTime) * 100;
 
-      timerText.innerText =
-        `${timeLeft}s`;
+    timerProgress.style.width = `${timePercent}%`;
 
-      let timePercent =
-        (timeLeft / totalTime) * 100;
+    if (timeLeft <= 10) {
+      stress += 2;
 
-      timerProgress.style.width =
-        `${timePercent}%`;
+      updateStress();
+    }
 
-      if (timeLeft <= 10) {
+    if (timeLeft <= 0) {
+      clearInterval(timer);
 
-        stress += 2;
-
-        updateStress();
-
-      }
-
-      if (timeLeft <= 0) {
-
-        clearInterval(timer);
-
-        nextQuestion();
-
-      }
-
-    }, 1000);
-
+      nextQuestion();
+    }
+  }, 1000);
 }
 
 function resetTimer() {
-
   clearInterval(timer);
 
   timeLeft = totalTime;
 
-  timerText.innerText =
-    `${timeLeft}s`;
+  timerText.innerText = `${timeLeft}s`;
 
-  timerProgress.style.width =
-    "100%";
+  timerProgress.style.width = "100%";
 
   startTimer();
-
 }
 
 function updateStress() {
+  if (stress > 100) stress = 100;
 
-  if (stress > 100)
-    stress = 100;
+  if (stress < 0) stress = 0;
 
-  if (stress < 0)
-    stress = 0;
+  stressLevel.innerText = `${stress}%`;
 
-  stressLevel.innerText =
-    `${stress}%`;
-
-  stressProgress.style.width =
-    `${stress}%`;
-
+  stressProgress.style.width = `${stress}%`;
 }
 
 function loadQuestion() {
+  addAIMessage(questions[currentQuestion]);
 
-  addAIMessage(
-    questions[currentQuestion]
-  );
+  questionCount.innerText = `${currentQuestion + 1}/${questions.length}`;
 
-  questionCount.innerText =
-    `${currentQuestion + 1}/${questions.length}`;
+  let qPercent = ((currentQuestion + 1) / questions.length) * 100;
 
-  let qPercent =
-    (
-      (currentQuestion + 1)
-      /
-      questions.length
-    ) * 100;
-
-  questionProgress.style.width =
-    `${qPercent}%`;
+  questionProgress.style.width = `${qPercent}%`;
 
   answerBox.value = "";
 
@@ -546,52 +372,37 @@ function loadQuestion() {
   stopRecording();
 
   resetTimer();
-
 }
 function formatMarkdown(text) {
-
   return text
 
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
 
     .replace(/\n/g, "<br>");
-
 }
 async function generateFinalReport() {
-
   addThinkingMessage();
 
   try {
-
     const response = await fetch(
       "https://api.groq.com/openai/v1/chat/completions",
       {
-
         method: "POST",
 
         headers: {
+          "Content-Type": "application/json",
 
-          "Content-Type":
-            "application/json",
-
-          "Authorization":
-            `Bearer ${GROQ_API_KEY}`
-
+          Authorization: `Bearer ${GROQ_API_KEY}`,
         },
 
         body: JSON.stringify({
-
-          model:
-            "llama-3.1-8b-instant",
+          model: "llama-3.1-8b-instant",
 
           messages: [
-
             {
-
               role: "system",
 
-              content:
-`You are an expert interview evaluator.
+              content: `You are an expert interview evaluator.
 
 Analyze this mock interview.
 
@@ -607,58 +418,38 @@ Rules:
 - professional
 - realistic
 - recruiter-like
-- easy to read`
-
+- easy to read`,
             },
 
             {
-
               role: "user",
 
-              content:
-`
+              content: `
 Role: ${selectedRole}
 
 Answers:
 ${userAnswers.join("\n\n")}
-`
-
-            }
-
-          ]
-
-        })
-
-      }
+`,
+            },
+          ],
+        }),
+      },
     );
 
-    const data =
-      await response.json();
+    const data = await response.json();
 
     removeThinkingMessage();
 
-    addAIMessage(
-      data.choices[0].message.content
-    );
-
-  }
-
-  catch(error) {
-
+    addAIMessage(data.choices[0].message.content);
+  } catch (error) {
     removeThinkingMessage();
 
-    addAIMessage(
-      "Unable to generate final report."
-    );
-
+    addAIMessage("Unable to generate final report.");
   }
-
 }
 
 async function nextQuestion() {
-
-  const answer =
-    answerBox.value.trim();
+  const answer = answerBox.value.trim();
 
   if (answer === "") return;
 
@@ -666,19 +457,12 @@ async function nextQuestion() {
 
   addUserMessage(answer);
 
-  let answerLength =
-    answer.length;
+  let answerLength = answer.length;
 
   if (answerLength < 20) {
-
     stress += 15;
-
-  }
-
-  else {
-
+  } else {
     stress -= 5;
-
   }
 
   updateStress();
@@ -687,10 +471,7 @@ async function nextQuestion() {
 
   answerBox.value = "";
 
-  if (
-    currentQuestion >= questions.length
-  ) {
-
+  if (currentQuestion >= questions.length) {
     clearInterval(timer);
 
     stopRecording();
@@ -698,56 +479,39 @@ async function nextQuestion() {
     addThinkingMessage();
 
     setTimeout(async () => {
-
       removeThinkingMessage();
 
       addAIMessage(
-        "Interview completed successfully. Generating your final AI evaluation report..."
+        "Interview completed successfully. Generating your final AI evaluation report...",
       );
 
       await generateFinalReport();
-
     }, 1500);
 
     return;
-
   }
 
   setTimeout(() => {
-
     loadQuestion();
-
   }, 1200);
-
 }
 
-restartBtn.addEventListener(
-  "click",
-  () => {
+restartBtn.addEventListener("click", () => {
+  currentQuestion = 0;
 
-    currentQuestion = 0;
+  stress = 0;
 
-    stress = 0;
+  userAnswers = [];
 
-    userAnswers = [];
+  chatContainer.innerHTML = "";
 
-    chatContainer.innerHTML = "";
+  updateStress();
 
-    updateStress();
+  loadQuestion();
+});
 
-    loadQuestion();
+nextBtn.addEventListener("click", nextQuestion);
 
-  }
-);
-
-nextBtn.addEventListener(
-  "click",
-  nextQuestion
-);
-
-startAiBtn.addEventListener(
-  "click",
-  generateAIQuestions
-);
+startAiBtn.addEventListener("click", generateAIQuestions);
 
 updateStress();

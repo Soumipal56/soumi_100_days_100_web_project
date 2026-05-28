@@ -258,7 +258,6 @@ canvas {
     padding: 15px 0;
     font-size: 1rem;
   }
-}
 /* Improve mobile responsiveness */
 @media screen and (max-width: 500px) {
   .wrapper {

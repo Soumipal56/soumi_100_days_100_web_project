@@ -2355,6 +2355,7 @@ body.light-mode .noise-layer {
   .projects-header {
     align-items: stretch;
   }
+}
 
 body.light-mode .stats-strip {
   background: rgba(255, 255, 255, 0.85);

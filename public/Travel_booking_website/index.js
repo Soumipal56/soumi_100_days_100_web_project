@@ -266,4 +266,3 @@ if (tabSignIn && tabSignUp && formSignInContainer && formSignUpContainer) {
     formSignUpContainer.classList.add("active");
     formSignInContainer.classList.remove("active");
   });
-}
