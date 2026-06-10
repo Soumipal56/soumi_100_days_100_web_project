@@ -101,6 +101,9 @@
     </button>
   `;
 
+  const signinBtn = `<a class="btn btn-primary btn-sm" id="navSignInCta" href="${base}public/Login.html">Sign in</a>`;
+  const logoutBtn = `<button class="btn btn-ghost btn-sm" id="navbarLogoutBtn">Log out</button>`;
+
   let navButtonsHTML = "";
   if (username) {
     const userSection = `
@@ -111,12 +114,10 @@
           <p class="mobile-user-role">Contributor</p>
         </div>
       </div>
-      <button class="btn btn-ghost btn-sm" id="logoutBtn">Log out</button>
     `;
-    navButtonsHTML = `${themeBtn} ${cursorBtn} ${homeBtn} ${learnBtn} ${contributorsBtn} ${readmeBtn} ${githubBtn} ${userSection}`;
+    navButtonsHTML = `${themeBtn} ${cursorBtn} ${homeBtn} ${learnBtn} ${contributorsBtn} ${readmeBtn} ${githubBtn} ${userSection} ${signinBtn} ${logoutBtn}`;
   } else {
-    const signinBtn = `<a class="btn btn-primary btn-sm" id="navSignInCta" href="${base}public/Login.html">Sign in</a>`;
-    navButtonsHTML = `${themeBtn} ${cursorBtn} ${homeBtn} ${learnBtn} ${contributorsBtn} ${readmeBtn} ${githubBtn} ${signinBtn}`;
+    navButtonsHTML = `${themeBtn} ${cursorBtn} ${homeBtn} ${learnBtn} ${contributorsBtn} ${readmeBtn} ${githubBtn} ${signinBtn} ${logoutBtn}`;
   }
 
   container.innerHTML = `
@@ -258,9 +259,9 @@
     });
   }
 
-  const logoutBtn = document.getElementById("logoutBtn");
-  if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
+  const navbarLogoutBtn = document.getElementById("navbarLogoutBtn");
+  if (navbarLogoutBtn) {
+    navbarLogoutBtn.addEventListener("click", () => {
       window.username = null;
       safeStorage.removeItem("loggedInUser");
       location.reload();
