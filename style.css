@@ -66,17 +66,22 @@ body.light-mode {
   --bg-surface: #eee8d5;
 
   --text-primary: #433422;
-  --text-secondary: #5c4a37;                   /* darker for visibility */
+  --text-secondary: #5c4a37; /* darker for visibility */
   --text-muted: rgba(67, 52, 34, 0.72);
   --accent-color: #cb4b16;
   --accent: #b58900;
   --accent-dim: rgba(181, 137, 0, 0.15);
   --accent-hover: #d33682;
-  --border: rgba(67, 52, 34, 0.2);            /* Increased opacity */
+  --border: rgba(67, 52, 34, 0.2); /* Increased opacity */
   --border-hover: rgba(67, 52, 34, 0.35);
   --border-accent: rgba(181, 137, 0, 0.45);
   --accent-glow: rgba(203, 75, 22, 0.2);
-  --glass-bg: rgba(253, 246, 227, 0.85);      /* High-contrast background for navbar */
+  --glass-bg: rgba(
+    253,
+    246,
+    227,
+    0.85
+  ); /* High-contrast background for navbar */
   --glass-border: rgba(67, 52, 34, 0.15);
   --gradient-1: linear-gradient(135deg, #cb4b16, #b58900);
 }
@@ -2420,7 +2425,7 @@ body.light-mode .footer.homepage-footer .social-btn {
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   color: var(--text-secondary);
-  font-family:inherit;
+  font-family: inherit;
   font-size: 0.75rem;
   font-weight: 500;
   cursor: pointer;
@@ -2992,24 +2997,23 @@ body.light-mode .noise-layer {
   }
 }
 
-  [data-theme="light"] .stats-strip,
-  body.light-mode .stats-strip {
-    background: rgba(255, 255, 255, 0.85);
-    box-shadow:
-      0 0 0 1px rgba(0, 0, 0, 0.05),
-      0 18px 60px rgba(0, 0, 0, 0.02);
-  }
+[data-theme="light"] .stats-strip,
+body.light-mode .stats-strip {
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.05),
+    0 18px 60px rgba(0, 0, 0, 0.02);
+}
 
-  [data-theme="light"] .brand-mark,
-  body.light-mode .brand-mark {
-    background: linear-gradient(
-      180deg,
-      rgba(59, 130, 246, 0.15),
-      rgba(255, 255, 255, 0.9)
-    );
-    border: 1px solid rgba(0, 0, 0, 0.08);
-  }
-
+[data-theme="light"] .brand-mark,
+body.light-mode .brand-mark {
+  background: linear-gradient(
+    180deg,
+    rgba(59, 130, 246, 0.15),
+    rgba(255, 255, 255, 0.9)
+  );
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
 
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -3358,18 +3362,18 @@ body.custom-cursor-active .cursor-ring.is-visible {
    ADDITIONAL SEPIA FIXES (Stats Strip, Subheaders & Cards)
    ============================================================ */
 :root[data-theme="sepia"] {
-  --text-muted-sepia: #73624e; 
+  --text-muted-sepia: #73624e;
 }
 :root[data-theme="sepia"] .stats-strip {
-  background: #433422 !important;       /* sepia brown */
-  border-color: #5c4a37 !important;     /* lighter brown border */
+  background: #433422 !important; /* sepia brown */
+  border-color: #5c4a37 !important; /* lighter brown border */
   box-shadow: 0 12px 40px rgba(67, 52, 34, 0.15) !important;
 }
 
 :root[data-theme="sepia"] .stat-item,
 :root[data-theme="sepia"] .stat-item strong,
 :root[data-theme="sepia"] .stat-divider {
-  color: #fdf6e3 !important;           
+  color: #fdf6e3 !important;
 }
 
 /* 2. Lighten the font color for  "100 Days · 100 Web Projects" */
@@ -3383,7 +3387,7 @@ body.custom-cursor-active .cursor-ring.is-visible {
 :root[data-theme="sepia"] .hero-extra,
 :root[data-theme="sepia"] .projects-header p,
 :root[data-theme="sepia"] p {
-  color: #5c4a37 !important; 
+  color: #5c4a37 !important;
 }
 
 /* 4. Fix the lower section blocks  */
@@ -3416,10 +3420,21 @@ body.custom-cursor-active .cursor-ring.is-visible {
 }
 
 @keyframes cursorNeonPulse {
-  0%, 100% { box-shadow: 0 0 10px #00ff88, 0 0 20px #00ff88; }
-  50% { box-shadow: 0 0 18px #00ff88, 0 0 36px #00ff88; }
+  0%,
+  100% {
+    box-shadow:
+      0 0 10px #00ff88,
+      0 0 20px #00ff88;
+  }
+  50% {
+    box-shadow:
+      0 0 18px #00ff88,
+      0 0 36px #00ff88;
+  }
 }
 
 @media (pointer: coarse) {
-  .cursor-switcher-container { display: none !important; }
+  .cursor-switcher-container {
+    display: none !important;
+  }
 }
