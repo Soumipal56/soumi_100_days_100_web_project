@@ -113,17 +113,16 @@ const decodeFromMorse = (morse) => {
   return decoded.join(" ");
 };
 
-
 const buildOutputSpans = (morseText) => {
-  const output = el('output');
-  output.innerHTML = '';
-  morseText.split(' ').forEach((tok, i, arr) => {
-    const span = document.createElement('span');
-    span.className   = 'morse-token';
+  const output = el("output");
+  output.innerHTML = "";
+  morseText.split(" ").forEach((tok, i, arr) => {
+    const span = document.createElement("span");
+    span.className = "morse-token";
     span.dataset.idx = i;
     span.textContent = tok;
     output.appendChild(span);
-    if (i < arr.length - 1) output.appendChild(document.createTextNode(' '));
+    if (i < arr.length - 1) output.appendChild(document.createTextNode(" "));
   });
 };
 
@@ -132,11 +131,17 @@ const translate = () => {
   el("char-count").textContent = input.length;
   const output = el("output");
   if (!input.trim()) {
+    output.innerHTML = "";
     output.textContent = "—";
     return;
   }
-  output.textContent =
-    mode === "encode" ? encodeToMorse(input) : decodeFromMorse(input);
+  if (mode === "encode") {
+    // render as spans for visual playback highlight
+    buildOutputSpans(encodeToMorse(input));
+  } else {
+    // decode mode — plain text, exactly as original
+    output.textContent = decodeFromMorse(input);
+  }
 };
 
 const clearInput = () => {
@@ -144,9 +149,19 @@ const clearInput = () => {
   el("output").textContent = "—";
   el("char-count").textContent = "0";
 };
-
-
-
+// ── Download output as .txt file ──────────────────────────────────
+const downloadOutput = () => {
+  const text = el("output").textContent;
+  if (text === "—" || !text.trim()) return;
+  const blob = new Blob([text], { type: "text/plain" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `morse-${mode}-${Date.now()}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast("Downloaded!");
+};
 const copyOutput = () => {
   const text = el("output").textContent;
   if (text === "—" || text === "-") return;
@@ -266,16 +281,16 @@ const setPlayState = (playing) => {
 
 // ──  highlight/clear helpers for visual playback ──────────────
 const highlightToken = (idx) => {
-  document.querySelectorAll('.morse-token').forEach((s, i) => {
-    s.classList.toggle('active-token', i === idx);
+  document.querySelectorAll(".morse-token").forEach((s, i) => {
+    s.classList.toggle("active-token", i === idx);
   });
 };
 
 const clearHighlight = () => {
-  document.querySelectorAll('.morse-token')
-    .forEach(s => s.classList.remove('active-token'));
+  document
+    .querySelectorAll(".morse-token")
+    .forEach((s) => s.classList.remove("active-token"));
 };
-
 
 const togglePlay = async () => {
   if (isPlaying) {
@@ -283,7 +298,6 @@ const togglePlay = async () => {
     return;
   }
 
-  // encode mode: output panel holds morse; decode mode: input panel holds morse
   const morseText =
     mode === "encode" ? el("output").textContent : el("input").value;
 
@@ -296,7 +310,7 @@ const togglePlay = async () => {
   const wordGap = dot * 7;
 
   const ctx = getCtx();
-  stopFlag  = false;
+  stopFlag = false;
   setPlayState(true);
 
   const tokens = morseText.split(" ");
@@ -304,6 +318,8 @@ const togglePlay = async () => {
   for (let i = 0; i < tokens.length; i++) {
     if (stopFlag) break;
     const tok = tokens[i];
+
+    highlightToken(i);
 
     if (tok === "/") {
       await sleep(wordGap - letterGap);
@@ -320,7 +336,7 @@ const togglePlay = async () => {
     }
   }
 
-  clearHighlight(); 
+  clearHighlight();
   stopFlag = false;
   setPlayState(false);
 };
@@ -334,6 +350,7 @@ const buildRefTable = () => {
   for (const char in MORSE_MAP) {
     const item = document.createElement("div");
     item.className = "ref-item";
+    item.title = `Click to insert "${char}"`;
 
     const charEl = document.createElement("span");
     charEl.className = "ref-char";
@@ -347,17 +364,17 @@ const buildRefTable = () => {
     item.appendChild(codeEl);
 
     // NEW: click inserts character (encode mode) or morse (decode mode)
-    item.addEventListener('click', () => {
-      const inputEl = el('input');
-      if (mode === 'encode') {
+    item.addEventListener("click", () => {
+      const inputEl = el("input");
+      if (mode === "encode") {
         inputEl.value += char;
       } else {
         const current = inputEl.value;
         inputEl.value = current
-          ? current.trimEnd() + ' ' + MORSE_MAP[char]
+          ? current.trimEnd() + " " + MORSE_MAP[char]
           : MORSE_MAP[char];
       }
-      inputEl.dispatchEvent(new Event('input'));
+      inputEl.dispatchEvent(new Event("input"));
       inputEl.focus();
       showToast(`Inserted "${char}"`);
     });
@@ -378,24 +395,25 @@ const toggleRef = () => {
 // ──  Swap panels ──────────────────────────────────────────────
 // Moves output → input and flips mode.
 const swapPanels = () => {
-  const outputText = el('output').textContent;
-  if (!outputText || outputText === '—') return;
+  const outputText = el("output").textContent;
+  if (!outputText || outputText === "—") return;
 
-  const newMode = mode === 'encode' ? 'decode' : 'encode';
+  const newMode = mode === "encode" ? "decode" : "encode";
   mode = newMode;
 
-  el('encode-btn').classList.toggle('active', mode === 'encode');
-  el('decode-btn').classList.toggle('active', mode === 'decode');
-  el('input-label').textContent  = mode === 'encode' ? 'Text' : 'Morse Code';
-  el('output-label').textContent = mode === 'encode' ? 'Morse Code' : 'Text';
-  el('input').placeholder = mode === 'encode'
-    ? 'Type your message...'
-    : 'Enter Morse code — space between letters, / between words...';
+  el("encode-btn").classList.toggle("active", mode === "encode");
+  el("decode-btn").classList.toggle("active", mode === "decode");
+  el("input-label").textContent = mode === "encode" ? "Text" : "Morse Code";
+  el("output-label").textContent = mode === "encode" ? "Morse Code" : "Text";
+  el("input").placeholder =
+    mode === "encode"
+      ? "Type your message..."
+      : "Enter Morse code — space between letters, / between words...";
 
-  el('input').value            = outputText;
-  el('char-count').textContent = outputText.length;
-  el('input').dispatchEvent(new Event('input'));
-  showToast('Panels swapped!');
+  el("input").value = outputText;
+  el("char-count").textContent = outputText.length;
+  el("input").dispatchEvent(new Event("input"));
+  showToast("Panels swapped!");
 };
 
 // ── Init ──────────────────────────────────────────────────────────
@@ -405,10 +423,41 @@ document.addEventListener("DOMContentLoaded", () => {
   el("clear-btn").addEventListener("click", clearInput);
   el("copy-btn").addEventListener("click", copyOutput);
   el("play-btn").addEventListener("click", togglePlay);
+  el("download-btn").addEventListener("click", downloadOutput);
   el("speed").addEventListener("input", updateSpeed);
   el("ref-toggle-btn").addEventListener("click", toggleRef);
   el("encode-btn").addEventListener("click", () => setMode("encode"));
   el("decode-btn").addEventListener("click", () => setMode("decode"));
+  el("swap-btn").addEventListener("click", swapPanels);
+
+  // ── Theme toggle ──────────────────────────────────────────────
+  el("theme-toggle").addEventListener("click", () => {
+    const isLight = document.documentElement.classList.toggle("light-mode");
+    localStorage.setItem("theme", isLight ? "light" : "dark");
+    showToast(`${isLight ? "Light" : "Dark"} Mode enabled`);
+  });
+
+  // ── Keyboard shortcuts ──────────────────────────────────────────
+  // When inside textarea: only Escape (clear) and Ctrl+Enter (play)
+  // Outside textarea: Ctrl+Shift+C (copy)
+  document.addEventListener("keydown", (e) => {
+    if (e.target.tagName === "TEXTAREA") {
+      if (e.key === "Escape") {
+        clearInput();
+        return;
+      }
+      if (e.ctrlKey && e.key === "Enter") {
+        e.preventDefault();
+        togglePlay();
+        return;
+      }
+      return;
+    }
+    if (e.ctrlKey && e.shiftKey && e.key === "C") {
+      e.preventDefault();
+      copyOutput();
+    }
+  });
 
   buildRefTable();
 });

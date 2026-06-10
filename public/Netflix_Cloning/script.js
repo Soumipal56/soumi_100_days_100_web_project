@@ -108,7 +108,15 @@ function logoutUser() {
   localStorage.removeItem("currentUser");
 }
 
-// ============= MODAL FUNCTIONS =============
+// ============= HELPER: Check if form has data ============= 
+function hasFormData(formId) {
+    const form = document.getElementById(formId);
+    if (!form) return false;
+    const inputs = form.querySelectorAll('input');
+    return Array.from(inputs).some(input => input.value.trim() !== '');
+}
+
+// ============= MODAL FUNCTIONS ============= 
 function openSignupModal() {
   document.getElementById("signupModal").classList.add("active");
 }
@@ -137,17 +145,32 @@ function switchToSignIn() {
   openSigninModal();
 }
 
-// Close modals when clicking outside
-window.addEventListener("click", (event) => {
-  const signupModal = document.getElementById("signupModal");
-  const signinModal = document.getElementById("signinModal");
+// ✅ FIX: Close modals when clicking outside — with confirmation if form has data
+window.addEventListener('click', (event) => {
+    const signupModal = document.getElementById('signupModal');
+    const signinModal = document.getElementById('signinModal');
 
-  if (event.target === signupModal) {
-    closeSignupModal();
-  }
-  if (event.target === signinModal) {
-    closeSigninModal();
-  }
+    if (event.target === signupModal) {
+        if (hasFormData('signupForm')) {
+            const confirmClose = confirm('Are you sure you want to leave? Your entered data will be lost.');
+            if (confirmClose) {
+                closeSignupModal();
+            }
+        } else {
+            closeSignupModal();
+        }
+    }
+
+    if (event.target === signinModal) {
+        if (hasFormData('signinForm')) {
+            const confirmClose = confirm('Are you sure you want to leave? Your entered data will be lost.');
+            if (confirmClose) {
+                closeSigninModal();
+            }
+        } else {
+            closeSigninModal();
+        }
+    }
 });
 
 // ============= AUTHENTICATION FLOW =============
@@ -279,17 +302,17 @@ function showMoviesPage() {
 }
 
 function renderMovies() {
-  const trendingContainer = document.getElementById("trendingMovies");
-  const actionContainer = document.getElementById("actionMovies");
-  const dramaContainer = document.getElementById("dramaMovies");
+    // const trendingContainer = document.getElementById('trendingMovies');
+    const actionContainer = document.getElementById('actionMovies');
+    const dramaContainer = document.getElementById('dramaMovies');
 
-  const trendingMovies = MOVIES_DATA.filter((m) => m.genre === "trending");
-  const actionMovies = MOVIES_DATA.filter((m) => m.genre === "action");
-  const dramaMovies = MOVIES_DATA.filter((m) => m.genre === "drama");
+    // const trendingMovies = MOVIES_DATA.filter(m => m.genre === 'trending');
+    const actionMovies = MOVIES_DATA.filter(m => m.genre === 'action');
+    const dramaMovies = MOVIES_DATA.filter(m => m.genre === 'drama');
 
-  trendingContainer.innerHTML = createMovieCards(trendingMovies);
-  actionContainer.innerHTML = createMovieCards(actionMovies);
-  dramaContainer.innerHTML = createMovieCards(dramaMovies);
+    // trendingContainer.innerHTML = createMovieCards(trendingMovies);
+    actionContainer.innerHTML = createMovieCards(actionMovies);
+    dramaContainer.innerHTML = createMovieCards(dramaMovies);
 }
 
 function createMovieCards(movies) {
@@ -322,9 +345,11 @@ function initMovieSearch() {
       return;
     }
 
-    const filteredMovies = MOVIES_DATA.filter((m) =>
-      m.title.toLowerCase().includes(query),
-    );
+        const containers = {
+            // 'trendingMovies': filteredMovies.filter(m => m.genre === 'trending'),
+            'actionMovies': filteredMovies.filter(m => m.genre === 'action'),
+            'dramaMovies': filteredMovies.filter(m => m.genre === 'drama')
+        };
 
     const containers = {
       trendingMovies: filteredMovies.filter((m) => m.genre === "trending"),
@@ -417,24 +442,84 @@ document.querySelectorAll(".faq-question").forEach((button) => {
   });
 });
 
-// ============= INITIALIZATION =============
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("Netflix Clone Loaded");
-
-  // Initialize user database
-  initUserDatabase();
-
-  // Initialize theme
-  initTheme();
-
-  // Setup event listeners
-  setupAuthListeners();
-  setupLogoutListener();
-  setupNavbarListener();
-
-  // Check if user is already logged in
-  const currentUser = getCurrentUser();
-  if (currentUser) {
-    showMoviesPage();
-  }
+// ============= INITIALIZATION ============= 
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Netflix Clone Loaded');
+    
+    // Initialize user database
+    initUserDatabase();
+    
+    // Initialize theme
+    initTheme();
+    
+    // Setup event listeners
+    setupAuthListeners();
+    setupLogoutListener();
+    setupNavbarListener();
+    
+    // Check if user is already logged in
+    const currentUser = getCurrentUser();
+    if (currentUser) {
+        showMoviesPage();
+    }
 });
+// LANGUAGE DROPDOWN
+
+const languageToggle = document.getElementById("languageToggle");
+const languageDropdown = document.querySelector(".language-dropdown");
+const languageText = document.getElementById("languageText");
+
+if(languageToggle){
+
+    // open dropdown
+    languageToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        languageDropdown.classList.toggle("active");
+    });
+
+    // select language
+    document.querySelectorAll(".language-menu div").forEach(option => {
+        option.addEventListener("click", () => {
+            languageText.textContent = option.textContent;
+            languageDropdown.classList.remove("active");
+        });
+    });
+
+    // close when clicking outside
+    window.addEventListener("click", () => {
+        languageDropdown.classList.remove("active");
+    });
+
+}
+// ============= TRENDING SLIDER BUTTONS =============
+const slider = document.querySelector('.trending-slider');
+const leftBtn = document.querySelector('.left-btn');
+const rightBtn = document.querySelector('.right-btn');
+
+if(slider && leftBtn && rightBtn){
+
+    const getScrollAmount = () => {
+        const card = document.querySelector('.trend-card');
+        return card ? (card.offsetWidth + 8) * 5 : 800; // scroll 5 cards
+    };
+
+    rightBtn.addEventListener('click', () => {
+        slider.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+    });
+
+    leftBtn.addEventListener('click', () => {
+        slider.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+    });
+
+    leftBtn.style.opacity = '0';
+    leftBtn.style.pointerEvents = 'none';
+
+    slider.addEventListener('scroll', () => {
+        leftBtn.style.opacity = slider.scrollLeft > 50 ? '1' : '0';
+        leftBtn.style.pointerEvents = slider.scrollLeft > 50 ? 'auto' : 'none';
+
+        const maxScroll = slider.scrollWidth - slider.clientWidth;
+        rightBtn.style.opacity = slider.scrollLeft >= maxScroll - 50 ? '0' : '1';
+        rightBtn.style.pointerEvents = slider.scrollLeft >= maxScroll - 50 ? 'none' : 'auto';
+    });
+}

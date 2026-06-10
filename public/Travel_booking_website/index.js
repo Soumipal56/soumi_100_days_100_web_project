@@ -71,6 +71,7 @@ faqItems.forEach(item => {
   question.addEventListener("click", () => {
     item.classList.toggle("active");
   });
+});
 // ================= CHATBOT =================
 
 const chatToggle = document.getElementById("chat-toggle");
@@ -80,6 +81,11 @@ const closeChat = document.getElementById("close-chat");
 const sendBtn = document.getElementById("send-btn");
 const userInput = document.getElementById("user-input");
 const chatMessages = document.getElementById("chat-messages");
+const savedChat = localStorage.getItem("travel_chat");
+
+if (savedChat) {
+  chatMessages.innerHTML = savedChat;
+}
 
 // OPEN / CLOSE CHATBOT
 
@@ -97,11 +103,23 @@ closeChat.addEventListener("click", () => {
   chatbotBox.style.display = "none";
 });
 
+function getTime() {
+
+  return new Date().toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+}
+
 // SEND MESSAGE FUNCTION
 function formatResponse(text) {
+  // Security: Prevent XSS by HTML escaping the raw text before formatting
+  const div = document.createElement("div");
+  div.textContent = text;
+  const escapedText = div.innerHTML;
 
-  return text
-
+  return escapedText
     // Bold text
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
 
@@ -110,7 +128,6 @@ function formatResponse(text) {
 
     // Line breaks
     .replace(/\n/g, "<br>");
-
 }
 async function sendMessage() {
   const message = userInput.value.trim();
@@ -123,9 +140,16 @@ async function sendMessage() {
 
   userMessage.classList.add("user-message");
 
-  userMessage.textContent = message;
+  userMessage.innerHTML = `
+  ${message}
+  <div class="msg-timestamp">${getTime()}</div>
+`;
 
   chatMessages.appendChild(userMessage);
+  localStorage.setItem(
+  "travel_chat",
+  chatMessages.innerHTML
+);
 
   // CLEAR INPUT
 
@@ -145,10 +169,14 @@ async function sendMessage() {
 
   chatMessages.appendChild(loadingMessage);
 
+
   chatMessages.scrollTop = chatMessages.scrollHeight;
 
+  const isLocalhost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+  const chatEndpoint = isLocalhost ? "http://localhost:5000/api/chat" : "/api/chat";
+
   try {
-    const response = await fetch("http://localhost:5000/api/chat", {
+    const response = await fetch(chatEndpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -162,6 +190,20 @@ async function sendMessage() {
 
     const data = await response.json();
 
+    let reply = "";
+    if (data) {
+      if (data.choices && Array.isArray(data.choices) && data.choices.length > 0 &&
+          data.choices[0].message && typeof data.choices[0].message.content === "string") {
+        reply = data.choices[0].message.content;
+      } else if (typeof data.reply === "string") {
+        reply = data.reply;
+      }
+    }
+
+    if (!reply) {
+      throw new Error("Invalid or empty response format from API");
+    }
+
     loadingMessage.remove();
 
     // BOT RESPONSE
@@ -170,9 +212,16 @@ async function sendMessage() {
 
     botMessage.classList.add("bot-message");
 
-    botMessage.innerHTML = formatResponse(data.reply);
+    botMessage.innerHTML = `
+  ${formatResponse(reply)}
+  <div class="msg-timestamp">${getTime()}</div>
+`;
 
     chatMessages.appendChild(botMessage);
+    localStorage.setItem(
+      "travel_chat",
+      chatMessages.innerHTML
+    );
 
     // AUTO SCROLL
 
@@ -196,21 +245,41 @@ userInput.addEventListener("keypress", (e) => {
   }
 });
 
-// ==========================================================================
-// AUTHENTICATION ENGINE CONTROLLER (#3793)
-// ==========================================================================
-const AuthController = {
-  // Elements targeting our updated DOM structural layouts
-  signUpBtn: document.getElementById("signUpBtn"),
-  authModal: document.getElementById("authModal"),
-  closeModalBtn: document.getElementById("closeModalBtn"),
-  signUpForm: document.getElementById("signUpForm"),
-  emailInput: document.getElementById("regEmail"),
-  passwordInput: document.getElementById("regPassword"),
 
-  tabSignUp.addEventListener("click", () => {
-    tabSignUp.classList.add("active");
-    tabSignIn.classList.remove("active");
-    formSignUpContainer.classList.add("active");
-    formSignInContainer.classList.remove("active");
-  });
+document
+  .getElementById("export-chat")
+  .addEventListener("click", () => {
+
+    const blob = new Blob(
+      [chatMessages.innerText],
+      { type: "text/plain" }
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+
+    a.href = url;
+
+    a.download = "travel-chat.txt";
+
+    a.click();
+
+    URL.revokeObjectURL(url);
+});
+document
+  .getElementById("clear-chat")
+  .addEventListener("click", () => {
+
+    if (confirm("Clear all chat history?")) {
+
+      chatMessages.innerHTML = `
+<div class="bot-message">
+  Hi! 👋<br>
+  Ask me anything about destinations, hotels, flights, or travel planning.
+</div>
+`;
+
+      localStorage.removeItem("travel_chat");
+    }
+});

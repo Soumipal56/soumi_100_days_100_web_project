@@ -125,3 +125,6 @@ button:hover {
     transform: translateY(0);
   }
 }
+.copied {
+   transform: scale(0.95);
+}

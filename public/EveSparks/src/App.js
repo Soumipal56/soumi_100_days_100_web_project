@@ -6,7 +6,11 @@ import Footer from "./MyComponents/footer";
 import Product from "./MyComponents/product";
 
 function App() {
-  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+
+  // ✅ Theme persisted in localStorage
+  const [theme, setTheme] = useState(
+    localStorage.getItem("theme") || "light"
+  );
 
   useEffect(() => {
     document.body.className = theme;
@@ -20,9 +24,7 @@ function App() {
   return (
     <>
       <Header toggleTheme={toggleTheme} theme={theme} />
-
       <Product />
-
       <Footer />
     </>
   );

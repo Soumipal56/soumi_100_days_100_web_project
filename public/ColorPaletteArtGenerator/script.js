@@ -10,12 +10,32 @@ const colorThief = new ColorThief();
 imageUpload.addEventListener("change", function (event) {
   const file = event.target.files[0];
 
-  if (file) {
-    if (!file.type.match("image.*")) {
-      statusMsg.textContent =
-        "Please select a valid image file (JPG, PNG, WEBP).";
-      statusMsg.style.color = "#ba1a1a"; // Error color
-      return;
+    if (file) {
+        const allowedTypes = [
+            "image/png",
+            "image/jpeg",
+            "image/webp"
+        ];
+
+        if (!allowedTypes.includes(file.type)) {
+            statusMsg.textContent =
+                "Please upload PNG, JPG or WEBP image.";
+
+            statusMsg.style.color = "#ba1a1a";
+
+            return;
+        }
+
+        statusMsg.textContent = `Processing ${file.name}...`;
+        statusMsg.style.color = "var(--md-sys-color-on-surface-variant)";
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            previewImage.src = e.target.result;
+            resultSection.style.display = 'flex';
+        };
+
+        reader.readAsDataURL(file);
     }
 
     statusMsg.textContent = `Processing ${file.name}...`;
@@ -31,16 +51,18 @@ imageUpload.addEventListener("change", function (event) {
   }
 });
 
-previewImage.addEventListener("load", function () {
-  try {
-    const palette = colorThief.getPalette(previewImage, 6);
-    renderPalette(palette);
-    statusMsg.textContent = "Palette generated successfully!";
-  } catch (error) {
-    console.error("Extraction failed:", error);
-    statusMsg.textContent =
-      "Failed to extract colors. Please try a different image.";
-  }
+previewImage.addEventListener('load', function () {
+    try {
+
+        const palette = colorThief.getPalette(previewImage, 6);
+        renderPalette(palette);
+        statusMsg.textContent = "Palette generated successfully!";
+    } catch (error) {
+        console.error("Extraction failed:", error);
+        statusMsg.textContent = "Failed to extract colors. Please try a different image.";
+        swatchesContainer.innerHTML = "";
+        resultSection.style.display = "none";
+    }
 });
 
 function renderPalette(paletteArray) {
@@ -50,13 +72,27 @@ function renderPalette(paletteArray) {
     const [r, g, b] = color;
     const hex = rgbToHex(r, g, b);
 
-    const wrapper = document.createElement("div");
-    wrapper.className = "swatch-wrapper";
-    wrapper.onclick = () => copyToClipboard(hex);
+        const wrapper = document.createElement('div');
+        wrapper.className = 'swatch-wrapper';
 
-    const swatch = document.createElement("div");
-    swatch.className = "swatch";
-    swatch.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+        wrapper.tabIndex = 0;
+
+        wrapper.setAttribute(
+            "aria-label",
+            `Copy color ${hex}`
+        );
+
+        wrapper.onclick = () => copyToClipboard(hex);
+
+        wrapper.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                copyToClipboard(hex);
+            }
+        });
+
+        const swatch = document.createElement('div');
+        swatch.className = 'swatch';
+        swatch.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
 
     const label = document.createElement("span");
     label.className = "swatch-label";
@@ -76,21 +112,48 @@ function rgbToHex(r, g, b) {
 }
 
 function copyToClipboard(text) {
-  navigator.clipboard
-    .writeText(text)
-    .then(() => {
-      showToast(`Copied ${text}`);
-    })
-    .catch((err) => {
-      console.error("Failed to copy text: ", err);
-    });
+
+    if (navigator.clipboard && window.isSecureContext) {
+
+        navigator.clipboard.writeText(text)
+            .then(() => {
+                showToast(`Copied ${text}`);
+            })
+            .catch(() => fallbackCopy(text));
+
+    } else {
+        fallbackCopy(text);
+    }
+}
+function fallbackCopy(text) {
+
+    const textArea = document.createElement("textarea");
+
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-9999px";
+
+    document.body.appendChild(textArea);
+
+    textArea.focus();
+    textArea.select();
+
+    document.execCommand("copy");
+
+    document.body.removeChild(textArea);
+
+    showToast(`Copied ${text}`);
 }
 
-function showToast(message) {
-  toast.textContent = message;
-  toast.classList.add("show");
+let toastTimer;
 
-  setTimeout(() => {
-    toast.classList.remove("show");
-  }, 2500);
+function showToast(message) {
+    clearTimeout(toastTimer);
+
+    toast.textContent = message;
+    toast.classList.add('show');
+
+    toastTimer = setTimeout(() => {
+        toast.classList.remove('show');
+    }, 2500);
 }

@@ -1,10 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&display=swap');
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Open Sans", sans-serif;
+  font-family: 'Open Sans', sans-serif;
 }
 
 /* Body Styling */
@@ -350,4 +350,41 @@ header h1 {
 
 .close-rules:hover {
   color: black;
+}
+
+.hint-controls {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.better-hint-btn {
+  background: #e29d1d;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.better-hint-btn:hover {
+  background: #795615;
+}
+
+.better-hint-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.hint-count {
+  color: #555;
+  font-size: 0.95rem;
+  margin-top: -5px;
+  margin-bottom: 15px;
+}
+
+.hint-count b {
+  color: #e29d1d;
 }

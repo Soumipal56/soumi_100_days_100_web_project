@@ -4,42 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GitHub Profile Battle — Compare Developer Profiles</title>
-    <meta
-      name="description"
-      content="Compare two GitHub profiles side-by-side. See who wins based on followers, repos, stars, and contributions in an epic developer showdown."
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <a
-      href="/"
-      class="project-back-button"
-      style="
-        position: fixed;
-        left: 18px;
-        top: 18px;
-        padding: 8px 12px;
-        border-radius: 8px;
-        background: linear-gradient(
-          90deg,
-          rgba(124, 99, 255, 0.14),
-          rgba(79, 141, 255, 0.1)
-        );
-        color: #fff;
-        text-decoration: none;
-        z-index: 9999;
-        font-weight: 700;
-        font-family: Inter, system-ui, sans-serif;
-        box-shadow: 0 8px 20px rgba(12, 18, 40, 0.35);
-      "
-      >← Back to Home</a
-    >
+    <meta name="description" content="Compare two GitHub profiles side-by-side. See who wins based on followers, repos, stars, and contributions in an epic developer showdown.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a href="/" class="project-back-button" style="position:fixed;left:18px;top:18px;padding:8px 16px;border-radius:8px;background:#1e293b;color:#3b82f6;border:1px solid #3b82f6;text-decoration:none;z-index:9999;font-weight:700;font-family:Inter, system-ui, sans-serif;transition:all 0.2s ease;" onmouseover="this.style.background='#3b82f6';this.style.color='#fff'" onmouseout="this.style.background='#1e293b';this.style.color='#3b82f6'">← Back to Home</a>
 
     <!-- Animated background particles -->
     <canvas id="particleCanvas"></canvas>
@@ -196,20 +168,29 @@
         </div>
       </section>
 
-      <!-- Loading Screen -->
-      <section id="loadingSection" class="loading-section hidden">
-        <div class="loading-content">
-          <div class="loading-swords">
-            <div class="sword sword-left">⚔️</div>
-            <div class="sword sword-right">⚔️</div>
-          </div>
-          <h2 class="loading-text">Analyzing profiles...</h2>
-          <div class="loading-bar">
-            <div class="loading-bar-fill"></div>
-          </div>
-          <p class="loading-sub">Fetching repos, stars, and contributions</p>
-        </div>
-      </section>
+            <!-- Contribution Heatmaps -->
+            <div class="contribution-section">
+                <h3 class="section-title">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                    Contribution Activity (Last 52 weeks)
+                </h3>
+                <div class="heatmaps-container">
+                    <div class="heatmap-card glass-card">
+                        <div class="heatmap-header">
+                            <img id="heatmapAvatar1" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="" class="heatmap-avatar">
+                            <span id="heatmapName1" class="heatmap-name"></span>
+                        </div>
+                        <div id="heatmap1" class="heatmap-grid"></div>
+                    </div>
+                    <div class="heatmap-card glass-card">
+                        <div class="heatmap-header">
+                            <img id="heatmapAvatar2" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="" class="heatmap-avatar">
+                            <span id="heatmapName2" class="heatmap-name"></span>
+                        </div>
+                        <div id="heatmap2" class="heatmap-grid"></div>
+                    </div>
+                </div>
+            </div>
 
       <!-- Battle Results -->
       <section id="resultSection" class="result-section hidden">

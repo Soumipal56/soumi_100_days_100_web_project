@@ -34,14 +34,17 @@ let difficulty = "easy";
 let highScores = JSON.parse(localStorage.getItem("mmHighScores") || "{}");
 
 // ── DOM References ─────────────────────────────────────────
-const grid = document.getElementById("gameGrid");
-const movesEl = document.getElementById("movesVal");
-const timerEl = document.getElementById("timerVal");
-const pairsEl = document.getElementById("pairsVal");
-const bestEl = document.getElementById("bestVal");
-const progressEl = document.getElementById("progressBar");
-const winModal = document.getElementById("winModal");
-const toastEl = document.getElementById("toast");
+const grid       = document.getElementById('gameGrid');
+const movesEl    = document.getElementById('movesVal');
+const timerEl    = document.getElementById('timerVal');
+const pairsEl    = document.getElementById('pairsVal');
+const bestEl     = document.getElementById('bestVal');
+const progressEl = document.getElementById('progressBar');
+const winModal   = document.getElementById('winModal');
+const toastEl    = document.getElementById('toast');
+const startBtn   = document.getElementById('startBtn');
+const hintBtn    = document.getElementById('hintBtn');
+const victorySound = document.getElementById('victorySound');
 
 // ── Event Listeners ───────────────────────────────────────
 document.querySelectorAll(".diff-btn").forEach((btn) => {
@@ -57,10 +60,13 @@ document.querySelectorAll(".diff-btn").forEach((btn) => {
   });
 });
 
-document.getElementById("startBtn").addEventListener("click", startGame);
-document.getElementById("hintBtn").addEventListener("click", useHint);
-document.getElementById("playAgainBtn").addEventListener("click", () => {
-  winModal.classList.remove("visible");
+startBtn.addEventListener('click', startGame);
+hintBtn.addEventListener('click', useHint);
+
+document.getElementById('playAgainBtn').addEventListener('click', () => {
+  victorySound.pause();
+  victorySound.currentTime = 0;
+  winModal.classList.remove('visible');
   setupPreview();
 });
 document.getElementById("restartBtn").addEventListener("click", setupPreview);
@@ -171,7 +177,8 @@ function startPreviewCountdown() {
 
 function setupPreview() {
   const cfg = DIFFICULTIES[difficulty];
-
+  victorySound.pause();
+  victorySound.currentTime = 0;
   // Cancel any running preview countdown or game timer
   if (previewInterval) {
      clearInterval(previewInterval);
@@ -187,6 +194,9 @@ function setupPreview() {
   moves = 0;
   seconds = 0;
   hintUsed = false;
+const hintBtn = document.getElementById('hintBtn');
+hintBtn.disabled = false;
+hintBtn.textContent = 'Hint';
 
   gameActive = false;
   lockBoard = true;
@@ -317,15 +327,18 @@ function checkMatch() {
  * Briefly reveal a matching pair (one use per game)
  */
 function useHint() {
-  if (!gameActive || hintUsed) {
-    showToast("Hint already used!");
+  if (hintUsed) {
+    showToast('💡 Hint already used!');
     return;
   }
   hintUsed = true;
+  const hintBtn = document.getElementById('hintBtn');
+  hintBtn.disabled = true;
+  hintBtn.textContent = 'Hint Used';
 
-  // Collect unmatched, unflipped cards
+  // Collect unmatched unflipped cards
   const unmatched = cards.filter(
-    (c) => !c.classList.contains("matched") && !c.classList.contains("flipped"),
+    c => !c.classList.contains('matched') && !c.classList.contains('flipped')
   );
   if (!unmatched.length) return;
 
@@ -336,20 +349,26 @@ function useHint() {
     if (!emojiMap[e]) emojiMap[e] = [];
     emojiMap[e].push(c);
   }
-  const pair = Object.values(emojiMap).find((g) => g.length >= 2);
-  if (!pair) return;
 
-  // Briefly show the pair
-  pair[0].classList.add("flipped");
-  pair[1].classList.add("flipped");
-  showToast("💡 Hint used!");
+  // Find a pair to reveal
+  const validPairs = Object.values(emojiMap).filter(group => group.length >= 2);
+  if (!validPairs.length) return;
 
+  // Pick one random pair
+  const pair = validPairs[Math.floor(Math.random() * validPairs.length)];
+  const cardA = pair[0];
+  const cardB = pair[1];
+
+  // Briefly flip the pair face-up
+  cardA.classList.add('flipped');
+  cardB.classList.add('flipped');
+  showToast('💡 Hint used!');
+
+  // Flip back after 1.5 seconds
   setTimeout(() => {
-    if (!pair[0].classList.contains("matched")) {
-      pair[0].classList.remove("flipped");
-      pair[1].classList.remove("flipped");
-    }
-  }, 1200);
+    if (!cardA.classList.contains('matched')) cardA.classList.remove('flipped');
+    if (!cardB.classList.contains('matched')) cardB.classList.remove('flipped');
+  }, 1500);
 }
 
 // ── Win Condition ─────────────────────────────────────────
@@ -390,6 +409,9 @@ function onWin() {
     ? "block"
     : "none";
 
+  victorySound.currentTime = 0;
+  victorySound.play();
+
   setTimeout(() => {
     winModal.classList.add("visible");
     launchConfetti();
@@ -402,8 +424,9 @@ function onWin() {
  * Spawn animated confetti particles on win
  */
 function launchConfetti() {
-  const container = document.getElementById("confettiContainer");
-  container.innerHTML = "";
+  console.log("CONFETTI FIRED");
+  const container = document.getElementById('confettiContainer');
+  container.innerHTML = '';
 
   const colors = [
     "#7c3aed",
@@ -415,18 +438,19 @@ function launchConfetti() {
     "#f472b6",
   ];
 
-  for (let i = 0; i < 70; i++) {
-    const p = document.createElement("div");
-    p.className = "confetti-particle";
+  for (let i = 0; i < 180; i++) {
+    const p = document.createElement('div');
+    p.className  = 'confetti-particle';
     p.style.cssText = `
       left: ${Math.random() * 100}%;
       background: ${colors[Math.floor(Math.random() * colors.length)]};
-      width: ${4 + Math.random() * 8}px;
-      height: ${4 + Math.random() * 8}px;
-      border-radius: ${Math.random() > 0.5 ? "50%" : "2px"};
+      width: ${10 + Math.random() * 12}px;
+      height: ${10 + Math.random() * 12}px;
+      border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
       animation-duration: ${1.5 + Math.random() * 2}s;
       animation-delay: ${Math.random() * 0.8}s;
     `;
+    p.style.boxShadow = `0 0 10px ${colors[Math.floor(Math.random() * colors.length)]}`;
     container.appendChild(p);
   }
 

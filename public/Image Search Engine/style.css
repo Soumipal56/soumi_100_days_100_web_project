@@ -14,14 +14,19 @@ h1 {
   font-weight: 600;
 }
 form {
-  width: 90%;
-  max-width: 600px;
-  margin: auto;
-  height: 80px;
-  background: #434989;
-  display: flex;
-  align-items: center;
-  border-radius: 8px;
+    width: 90%;
+    max-width: 750px;
+    margin: 0 auto 30px auto;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    padding: 5px;
+    position: relative;
+    z-index: 10; /* CRITICAL: Forces the form to sit on top of any invisible overlays */
 }
 form input {
   flex: 1;
@@ -45,6 +50,30 @@ form button {
   border-bottom-right-radius: 8px;
   cursor: pointer;
 }
+
+form button:hover {
+    background: #4f46e5;
+    transform: scale(1.02);
+}
+
+#reset-button {
+    background: #ef4444;
+    margin-left: 10px;
+}
+
+#reset-button:hover {
+    background: #dc2626;
+}
+
+#reset-button {
+    background: #ef4444;
+    margin-left: 10px;
+}
+
+#reset-button:hover {
+    background: #dc2626;
+}
+
 ::placeholder {
   color: white;
   font-size: 18px;
@@ -72,4 +101,12 @@ form button {
   height: 230px;
   object-fit: cover;
   border-radius: 5px;
+}
+
+.error-msg {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #f87171;
+    font-size: 1.1rem;
+    margin-top: 2rem;
 }

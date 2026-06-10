@@ -1,4 +1,4 @@
-var candies = ["Blue", "Orange", "Green", "Yellow", "Red", "Purple"];
+﻿var candies = ["Blue", "Orange", "Green", "Yellow", "Red", "Purple"];
 var board = [];
 var rows = 9;
 var columns = 9;
@@ -7,6 +7,8 @@ var score = 0;
 var currTile;
 var otherTile;
 var isProcessing = false;
+var hintTimer;
+var HINT_DELAY = 7000;
 
 window.onload = function () {
   startGame();
@@ -18,8 +20,21 @@ window.onload = function () {
     board = [];
     document.getElementById("board").innerHTML = "";
     startGame();
-  });
-};
+    resetHintTimer();
+
+    // Reset button functionality
+    document.getElementById("Reset").addEventListener("click", function() {
+        if (isProcessing) return;
+        score = 0;
+        document.getElementById("score1").innerText = score;
+        board = [];
+        document.getElementById("board").innerHTML = "";
+        startGame();
+        resetHintTimer();
+    });
+}
+    
+
 
 function randomCandy() {
   return candies[Math.floor(Math.random() * candies.length)]; //0 - 5.99
@@ -33,23 +48,20 @@ function startGame() {
   boardElement.innerHTML = "";
   board = [];
 
-  for (let r = 0; r < rows; r++) {
-    let row = [];
-    for (let c = 0; c < columns; c++) {
-      let candy;
-      do {
-        candy = randomCandy();
-      } while (
-        (c >= 2 &&
-          row[c - 1].src.includes(candy) &&
-          row[c - 2].src.includes(candy)) ||
-        (r >= 2 &&
-          board[r - 1][c].src.includes(candy) &&
-          board[r - 2][c].src.includes(candy))
-      );
-      let tile = document.createElement("img");
-      tile.id = r + "-" + c;
-      tile.src = "./images/" + candy + ".png";
+    for (let r = 0; r < rows; r++) {
+        let row = [];
+        for (let c = 0; c < columns; c++) {
+            let candy;
+            do {
+                candy = randomCandy();
+            } while (
+                (c >= 2 && row[c - 1].src.includes(candy) && row[c - 2].src.includes(candy)) ||
+                (r >= 2 && board[r - 1][c].src.includes(candy) && board[r - 2][c].src.includes(candy))
+            );
+            let tile = document.createElement("img");
+            tile.draggable = true;
+            tile.id = r + "-" + c;
+            tile.src = "./images/" + candy + ".png";
 
       tile.addEventListener("dragstart", dragStart);
       tile.addEventListener("dragover", dragOver);
@@ -70,9 +82,11 @@ function startGame() {
 }
 
 function dragStart() {
-  if (isProcessing) return;
-  //this refers to tile that was clicked on for dragging
-  currTile = this;
+    if (isProcessing) return;
+    clearHint();
+    resetHintTimer();
+    //this refers to tile that was clicked on for dragging
+    currTile = this;
 }
 
 function dragOver(e) {
@@ -126,8 +140,39 @@ async function dragEnd() {
     } else {
       await resolveCascades();
     }
-  }
-  otherTile = null;
+
+    let currCoords = currTile.id.split("-"); // id="0-0" -> ["0", "0"]
+    let r = parseInt(currCoords[0]);
+    let c = parseInt(currCoords[1]);
+
+    let otherCoords = otherTile.id.split("-");
+    let r2 = parseInt(otherCoords[0]);
+    let c2 = parseInt(otherCoords[1]);
+
+    let moveLeft = c2 == c-1 && r == r2;
+    let moveRight = c2 == c+1 && r == r2;
+
+    let moveUp = r2 == r-1 && c == c2;
+    let moveDown = r2 == r+1 && c == c2;
+
+    let isAdjacent = moveLeft || moveRight || moveUp || moveDown;
+
+    if (isAdjacent) {
+        let currImg = currTile.src;
+        let otherImg = otherTile.src;
+        currTile.src = otherImg;
+        otherTile.src = currImg;
+
+        let validMove = checkValid();
+        if (!validMove) {
+            currTile.src = currImg;
+            otherTile.src = otherImg;
+        } else {
+            await resolveCascades();
+        }
+    }
+    otherTile = null;
+    resetHintTimer();
 }
 
 function findMatches() {
@@ -174,36 +219,26 @@ function checkValid() {
 }
 
 async function resolveCascades() {
-  isProcessing = true;
-  let combo = 1;
-  while (true) {
-    let matches = findMatches();
-    if (matches.length === 0) break;
+    clearHint();
+    clearTimeout(hintTimer);
+    isProcessing = true;
+    let combo = 1;
+    while (true) {
+        let matches = findMatches();
+        if (matches.length === 0) break;
 
     if (combo > 1) {
       showCombo(combo);
     }
-
-    score += matches.length * 10 * combo;
-    document.getElementById("score1").innerText = score;
-
-    matches.forEach((tile) => {
-      tile.src = "./images/blank.png";
-    });
-
-    await new Promise((resolve) => setTimeout(resolve, 300));
-
-    await slideAndRefill();
-    combo++;
-  }
-
-  if (!hasAvailableMoves()) {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    shuffleBoard();
-    await resolveCascades();
-  }
-
-  isProcessing = false;
+    
+    if (!hasAvailableMoves()) {
+        await new Promise(resolve => setTimeout(resolve, 500));
+        shuffleBoard();
+        await resolveCascades();
+    }
+    
+    isProcessing = false;
+    resetHintTimer();
 }
 
 async function slideAndRefill() {
@@ -232,6 +267,48 @@ async function slideAndRefill() {
   }
 
   await new Promise((resolve) => setTimeout(resolve, 200));
+}
+
+function resetHintTimer() {
+    clearHint();
+    clearTimeout(hintTimer);
+
+    hintTimer = setTimeout(() => {
+        if (!isProcessing) {
+            showHint();
+        }
+    }, HINT_DELAY);
+}
+
+function clearHint() {
+    document.querySelectorAll(".candy-hint").forEach(tile => {
+        tile.classList.remove("candy-hint");
+    });
+}
+
+function findAvailableMove() {
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < columns; c++) {
+            if (c < columns - 1 && testSwap(r, c, r, c + 1)) {
+                return [board[r][c], board[r][c + 1]];
+            }
+
+            if (r < rows - 1 && testSwap(r, c, r + 1, c)) {
+                return [board[r][c], board[r + 1][c]];
+            }
+        }
+    }
+
+    return [];
+}
+
+function showHint() {
+    clearHint();
+
+    const hintTiles = findAvailableMove();
+    hintTiles.forEach(tile => {
+        tile.classList.add("candy-hint");
+    });
 }
 
 function hasAvailableMoves() {
@@ -268,18 +345,13 @@ function testSwap(r1, c1, r2, c2) {
 }
 
 function shuffleBoard() {
-  let allCandies = [];
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < columns; c++) {
-      allCandies.push(board[r][c].src);
-    }
-  }
+    clearHint();
 
-  do {
-    // Shuffle the array
-    for (let i = allCandies.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [allCandies[i], allCandies[j]] = [allCandies[j], allCandies[i]];
+    let allCandies = [];
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < columns; c++) {
+            allCandies.push(board[r][c].src);
+        }
     }
 
     // Apply to board

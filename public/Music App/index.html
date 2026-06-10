@@ -13,30 +13,8 @@
     <link rel="stylesheet" href="style.css" />
   </head>
 
-  <body>
-    <a
-      href="/"
-      class="project-back-button"
-      style="
-        position: fixed;
-        left: 18px;
-        top: 18px;
-        padding: 8px 12px;
-        border-radius: 8px;
-        background: linear-gradient(
-          90deg,
-          rgba(124, 99, 255, 0.14),
-          rgba(79, 141, 255, 0.1)
-        );
-        color: #fff;
-        text-decoration: none;
-        z-index: 9999;
-        font-weight: 700;
-        font-family: Inter, system-ui, sans-serif;
-        box-shadow: 0 8px 20px rgba(12, 18, 40, 0.35);
-      "
-      >← Back to Home</a
-    >
+<body>
+<a href="/" class="project-back-button" style="position:fixed;left:18px;top:18px;padding:8px 16px;border-radius:8px;background:#1e293b;color:#3b82f6;border:1px solid #3b82f6;text-decoration:none;z-index:9999;font-weight:700;font-family:Inter, system-ui, sans-serif;transition:all 0.2s ease;" onmouseover="this.style.background='#3b82f6';this.style.color='#fff'" onmouseout="this.style.background='#1e293b';this.style.color='#3b82f6'">← Back to Home</a>
 
     <div class="app-shell">
       <aside class="sidebar" aria-label="Music categories">
@@ -83,22 +61,37 @@
           </div>
         </header>
 
-        <section class="hero-player" aria-label="Featured track">
-          <div class="hero-copy">
-            <p class="eyebrow" id="heroCategory">Trending</p>
-            <h2 id="heroTitle">Select a track</h2>
-            <p id="heroMeta">
-              Choose any song from the library to start listening.
-            </p>
-          </div>
-          <img id="heroCover" class="hero-cover" src="" alt="" />
-        </section>
+            <section class="hero-player" aria-label="Featured track">
+                <div class="hero-copy">
+                    <p class="eyebrow" id="heroCategory">Trending</p>
+                    <h2 id="heroTitle">Select a track</h2>
+                    <p id="heroMeta">Choose any song from the library to start listening.</p>
+                </div>
+                <img id="heroCover" class="hero-cover" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="" />
+            </section>
 
-        <section class="library-section" aria-label="Song library">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow" id="libraryLabel">All songs</p>
-              <h2>Library</h2>
+            <section class="library-section" aria-label="Song library">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow" id="libraryLabel">All songs</p>
+                        <h2>Library</h2>
+                    </div>
+                    <p id="resultCount">0 songs</p>
+                </div>
+
+                <div class="song-grid" id="songGrid"></div>
+                <p class="empty-state" id="emptyState">No songs match your search.</p>
+            </section>
+        </main>
+
+        <footer class="player-bar" aria-label="Music player">
+            <div class="track-summary">
+                <img id="playerCover" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" alt="" />
+                <div>
+                    <strong id="playerTitle">Nothing playing</strong>
+                    <span id="playerArtist">Pick a track to begin</span>
+                </div>
+                <button class="like-button player-like" id="playerLikeBtn" type="button" aria-label="Like current song">♡</button>
             </div>
             <p id="resultCount">0 songs</p>
           </div>

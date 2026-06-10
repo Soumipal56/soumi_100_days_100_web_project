@@ -2,7 +2,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
@@ -125,4 +125,143 @@ label {
   .submit {
     height: 48px;
   }
+}
+
+.toast {
+  position: fixed;
+  top: 25px;
+  right: 25px;
+
+  min-width: 320px;
+  max-width: 420px;
+
+  padding: 16px;
+
+  border-radius: 16px;
+
+  backdrop-filter: blur(18px);
+
+  border: 1px solid rgba(255, 255, 255, 0.15);
+
+  color: white;
+
+  opacity: 0;
+  visibility: hidden;
+
+  transform: translateX(120%);
+
+  transition: all 0.4s ease;
+
+  z-index: 99999;
+
+  overflow: hidden;
+
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
+}
+
+.toast.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+.toast-content {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.toast-icon {
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  font-size: 18px;
+  font-weight: 700;
+
+  flex-shrink: 0;
+}
+
+.toast.success {
+  background: rgba(16, 185, 129, 0.18);
+}
+
+.toast.success .toast-icon {
+  background: #10b981;
+  color: white;
+}
+
+.toast.error {
+  background: rgba(239, 68, 68, 0.18);
+}
+
+.toast.error .toast-icon {
+  background: #ef4444;
+  color: white;
+}
+
+#toast-message {
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.toast-progress {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+
+  height: 4px;
+  width: 100%;
+}
+
+.toast.success .toast-progress {
+  background: #10b981;
+  animation: progress 4s linear forwards;
+}
+
+.toast.error .toast-progress {
+  background: #ef4444;
+  animation: progress 4s linear forwards;
+}
+
+@keyframes progress {
+  from {
+    width: 100%;
+  }
+
+  to {
+    width: 0%;
+  }
+}
+
+@media (max-width: 480px) {
+  .toast {
+    left: 15px;
+    right: 15px;
+
+    min-width: unset;
+    max-width: unset;
+  }
+}
+
+@keyframes toastPop {
+  0% {
+    opacity: 0;
+    transform: translateX(120%) scale(0.9);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.toast.show {
+  animation: toastPop 0.35s ease forwards;
 }

@@ -583,19 +583,38 @@ a {
 }
 
 @media screen and (max-width: 380px) {
-  .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-  }
-  .skill-card {
-    min-width: unset;
-    justify-content: center;
-  }
-  .projects .element {
-    padding: 15px;
-  }
-  .projects .text-group h3 {
-    font-size: 15px;
-  }
+    .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+    .skill-card {
+        min-width: unset;
+        justify-content: center;
+    }
+    .projects .element {
+        padding: 15px;
+    }
+    .projects .text-group h3 {
+        font-size: 15px;
+    }
+}
+.back-home {
+    position: fixed;
+    top: 90px;
+    left: 20px;
+    z-index: 999;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: #1e293b;
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: 1px solid #3b82f6;
+}
+
+.back-home:hover {
+    background: #3b82f6;
+    color: #fff;
 }

@@ -1,11 +1,12 @@
-const express = require("express");
-const app = express();
-const port = 3000;
-const path = require("path");
-const bodyParser = require("body-parser");
-const multer = require("multer");
-const ejs = require("ejs");
-const fs = require("fs"); // ✅ fs module add kiya
+const express = require('express')
+const app = express()
+const port = 3000
+const path = require('path');
+const crypto = require('crypto');
+const bodyParser = require('body-parser');
+const multer = require('multer');
+const ejs = require('ejs');
+const fs = require('fs'); // ✅ fs module add kiya
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "view"));
@@ -19,14 +20,17 @@ if (!fs.existsSync(uploadsDir)) {
   console.log("uploads/ folder created!");
 }
 
-// Professor ka same storage code
 var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadsDir); // ✅ absolute path use karo
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
+    destination: function (req, file, cb) {
+        cb(null, uploadsDir);
+    },
+    filename: function (req, file, cb) {
+        const ext = path.extname(file.originalname).toLowerCase();
+        const allowedExts = ['.jpg', '.jpeg', '.png', '.webp'];
+        const safeExt = allowedExts.includes(ext) ? ext : '.bin';
+        const safeName = crypto.randomBytes(16).toString('hex') + safeExt;
+        cb(null, safeName);
+    },
 });
 
 // ✅ Updated Multer config with file size and type validation filters
@@ -58,9 +62,11 @@ app.get("/file", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "file_uploader.html"));
 });
 
-app.post("/upload", upload.array("myFile"), (req, res) => {
-  console.log("Body: ", req.body);
-  console.log("Files: ", req.files);
+const MAX_FILES = 10;
+
+app.post("/upload", upload.array("myFile", MAX_FILES), (req, res) => {
+    console.log("Body: ", req.body);
+    console.log("Files: ", req.files);
 
   const firstName = req.body.firstName;
   const lastName = req.body.lastName;
