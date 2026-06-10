@@ -6,21 +6,21 @@
     getItem(key) {
       try {
         return localStorage.getItem(key);
-      } catch (_) {
+      } catch {
         return null;
       }
     },
     setItem(key, value) {
       try {
         localStorage.setItem(key, value);
-      } catch (_) {
+      } catch {
         // Ignored
       }
     },
     removeItem(key) {
       try {
         localStorage.removeItem(key);
-      } catch (_) {
+      } catch {
         // Ignored
       }
     },
@@ -104,9 +104,9 @@
   const signinBtn = `<a class="btn btn-primary btn-sm" id="navSignInCta" href="${base}public/Login.html">Sign in</a>`;
   const logoutBtn = `<button class="btn btn-ghost btn-sm" id="navbarLogoutBtn">Log out</button>`;
 
-  let navButtonsHTML = "";
+  let navButtonsHTML;
   // Ensure any stray Sign In button is removed after rendering (defensive)
-  const straySignIn = document.getElementById('navSignInCta');
+  const straySignIn = document.getElementById("navSignInCta");
   if (straySignIn) straySignIn.remove();
   if (username) {
     const userSection = `
