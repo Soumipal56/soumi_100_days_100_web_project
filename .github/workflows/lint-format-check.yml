@@ -48,7 +48,7 @@ jobs:
 
           while IFS= read -r -d '' file; do
             case "$file" in
-              *.html|*.css|*.js)
+              *.css|*.js)
                 printf '%s\0' "$file" >> lint-targets.txt
                 ;;
             esac
