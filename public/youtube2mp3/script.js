@@ -62,7 +62,18 @@ document.addEventListener('DOMContentLoaded', () => {
       submitBtn.disabled = false;
 
       if (data.status === 'ok') {
-        showSuccess(data.title, data.link, quality);
+        let safeLink = '#';
+        if (data.link) {
+          try {
+            const urlObj = new URL(data.link);
+            if (urlObj.protocol === 'http:' || urlObj.protocol === 'https:') {
+              safeLink = urlObj.href;
+            }
+          } catch (e) {
+            // Invalid URL
+          }
+        }
+        showSuccess(data.title, safeLink, quality);
       } else {
         showError(data.msg || 'Conversion failed. Please check the Video ID or API Key.');
       }
