@@ -129,7 +129,7 @@ jobs:
           docker tag 100days-web:ci-${{ github.sha }} 100days-web:scan
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.30.0
+        uses: aquasecurity/trivy-action@master
         with:
           image-ref: "100days-web:scan"
           format: "table"
