@@ -2891,6 +2891,19 @@
     ],
     "difficulty": "advanced",
     "projectPath": "./public/BeatMaker/demo.html"
+  },
+  {
+    "projectNo": 229,
+    "projectName": "YouTube to MP3",
+    "projectType": "Tool",
+    "projectDesc": "A client-side tool to fetch MP3 downloads for YouTube videos using RapidAPI.",
+    "techStack": [
+      "html",
+      "css",
+      "javascript",
+      "api"
+    ],
+    "difficulty": "intermediate",
+    "projectPath": "./public/youtube2mp3/index.html"
   }
-
 ]

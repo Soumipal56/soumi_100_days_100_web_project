@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="image/png" href="yt.png" />
+  <link rel="stylesheet" href="styles.css">
+  <title>QuickTube</title>
+  <style>
+    /* Additional styles for API key input */
+    .api-key-section {
+      margin-top: 15px;
+      text-align: left;
+    }
+    .api-key-section label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    .api-key-section input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+    .api-key-section input::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+    #result-container {
+      margin-top: 20px;
+    }
+    .result-card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      display: none;
+    }
+    .success-card {
+      border: 1px solid #1abc9c;
+    }
+    .error-card {
+      border: 1px solid #e74c3c;
+    }
+    .download-link button {
+      background: #1abc9c;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .loading {
+      display: none;
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-shape"></div>
+
+  <form id="form" class="glass-form">
+    <h1>
+      <div class="icon-container">
+        <svg class="youtube-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path
+            d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+        </svg>
+      </div>
+      QuickTube
+    </h1>
+
+    <p class="subtitle">Fast & High-Quality MP3 Downloader</p>
+
+    <div class="api-key-section">
+      <label for="apiKey">RapidAPI Key (youtube-mp36)</label>
+      <input type="text" id="apiKey" placeholder="Enter your RapidAPI key" required>
+    </div>
+
+    <div class="input-group" style="margin-top: 15px;">
+      <label for="videoId">Enter Video ID</label>
+      <div class="input-wrapper">
+        <input type="text" id="videoId" placeholder="e.g. dQw4w9WgXcQ" required>
+      </div>
+    </div>
+
+    <div class="quality-section">
+      <label>🎧 Select Audio Quality</label>
+      <div class="quality-options">
+        <div class="quality-option">
+          <input type="radio" name="quality" id="q128" value="128" checked>
+          <label for="q128">
+            <span class="kbps">128 kbps</span>
+            <span class="desc">Small size</span>
+          </label>
+        </div>
+        <div class="quality-option">
+          <input type="radio" name="quality" id="q192" value="192">
+          <label for="q192">
+            <span class="kbps">192 kbps</span>
+            <span class="desc">Balanced</span>
+          </label>
+        </div>
+        <div class="quality-option">
+          <input type="radio" name="quality" id="q320" value="320">
+          <label for="q320">
+            <span class="kbps">320 kbps</span>
+            <span class="desc">High Quality</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" id="submit-btn" class="glow-on-hover">Convert to MP3</button>
+    
+    <div id="loading" class="loading">Converting... Please wait.</div>
+  </form>
+  </div>
+
+  <div class="bottom-container" id="result-container">
+    <div id="success-card" class="result-card success-card">
+      <div class="result-info">
+        <div class="status-row">
+          <span class="status-badge">Ready!</span>
+          <span class="quality-badge" id="quality-display">128 kbps</span>
+        </div>
+        <h3 id="song-title">Song Title</h3>
+      </div>
+      <a href="#" class="download-link" id="download-url" target="_blank">
+        <button id="download-btn">
+          GET DOWNLOAD LINK
+        </button>
+      </a>
+    </div>
+
+    <div id="error-card" class="result-card error-card">
+      <div class="error-icon">!</div>
+      <p id="error-message">Error message</p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
