@@ -7,7 +7,7 @@
 body {
   font-family: Arial, sans-serif;
 
-  min-height: 100vh;
+    font-family: 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
   display: flex;
   justify-content: center;
@@ -15,8 +15,13 @@ body {
 
   padding: 20px;
 
-  background:
-    linear-gradient(rgba(15, 23, 42, 0.65), rgba(15, 23, 42, 0.65)),
+    padding:var(--spacing-lg);
+
+    background:
+    linear-gradient(
+        rgba(15,23,42,0.65),
+        rgba(15,23,42,0.65)
+    ),
     url("../assets/bg/medical-feedback.jpg");
 
   background-size: cover;
@@ -49,7 +54,11 @@ body {
 
   font-size: 2.2rem;
 
-  margin-bottom: 10px;
+    font-family: 'Poppins', sans-serif;
+    font-size:2rem;
+    font-weight:600;
+
+    margin-bottom:var(--spacing-sm);
 }
 
 .feedbackmain p {
@@ -57,7 +66,9 @@ body {
 
   margin-bottom: 30px;
 
-  color: #dbeafe;
+    margin-bottom:var(--spacing-xl);
+
+    color:#dbeafe;
 }
 
 form {
@@ -68,7 +79,11 @@ form {
 label {
   margin-bottom: 10px;
 
-  font-weight: bold;
+    display: block;
+    margin-bottom:var(--spacing-sm);
+
+    font-weight:600;
+    font-size:0.95rem;
 }
 
 textarea {
@@ -78,15 +93,15 @@ textarea {
 
   padding: 16px;
 
-  border: none;
+    padding:var(--spacing-md);
 
-  border-radius: 16px;
+    border:1px solid rgba(255,255,255,0.2);
 
-  resize: none;
+    border-radius:var(--radius-md);
 
   font-size: 1rem;
 
-  outline: none;
+    font-size:0.95rem;
 
   background: rgba(255, 255, 255, 0.95);
 
@@ -104,23 +119,28 @@ button {
 .submit-btn {
   margin-top: 25px;
 
-  background: linear-gradient(135deg, #2563eb, #0ea5e9);
+    margin-top:var(--spacing-xl);
 
-  color: white;
+    background:var(--primary);
 
   padding: 14px;
 
-  border-radius: 14px;
+    padding:var(--spacing-md);
 
-  font-size: 1rem;
+    border-radius:var(--radius-md);
 
-  font-weight: bold;
+    font-size:0.95rem;
+
+    font-weight:600;
 }
 
 .submit-btn:hover {
   transform: translateY(-2px);
 
-  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+    background:var(--primary-dark);
+    transform:translateY(-2px);
+
+    box-shadow:var(--shadow-md);
 }
 
 .back {
@@ -128,19 +148,26 @@ button {
 
   margin-top: 15px;
 
-  background: #e2e8f0;
+    margin-top:var(--spacing-md);
 
-  color: #1e293b;
+    background:transparent;
 
-  padding: 14px;
+    color:white;
 
-  border-radius: 14px;
+    padding:var(--spacing-md);
 
-  font-weight: bold;
+    border-radius:var(--radius-md);
+
+    border:1px solid rgba(255,255,255,0.3);
+
+    font-weight:600;
+    font-size:0.95rem;
 }
 
-.back:hover {
-  background: white;
+.back:hover{
+
+    background:rgba(255,255,255,0.1);
+    border-color:white;
 }
 
 /* Toast */
