@@ -8,66 +8,9 @@
   <link rel="shortcut icon" type="image/png" href="yt.png" />
   <link rel="stylesheet" href="styles.css">
   <title>QuickTube</title>
-  <style>
-    /* Additional styles for API key input */
-    .api-key-section {
-      margin-top: 15px;
-      text-align: left;
-    }
-    .api-key-section label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: 500;
-    }
-    .api-key-section input {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.1);
-      color: white;
-    }
-    .api-key-section input::placeholder {
-      color: rgba(255, 255, 255, 0.5);
-    }
-    #result-container {
-      margin-top: 20px;
-    }
-    .result-card {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 15px;
-      border-radius: 10px;
-      text-align: center;
-      display: none;
-    }
-    .success-card {
-      border: 1px solid #1abc9c;
-    }
-    .error-card {
-      border: 1px solid #e74c3c;
-    }
-    .download-link button {
-      background: #1abc9c;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-weight: bold;
-      margin-top: 10px;
-    }
-    .loading {
-      display: none;
-      text-align: center;
-      margin-top: 10px;
-      font-weight: bold;
-    }
-  </style>
 </head>
 
 <body>
-  <div class="bg-shape"></div>
-
   <form id="form" class="glass-form">
     <h1>
       <div class="icon-container">
@@ -124,7 +67,6 @@
     
     <div id="loading" class="loading">Converting... Please wait.</div>
   </form>
-  </div>
 
   <div class="bottom-container" id="result-container">
     <div id="success-card" class="result-card success-card">
