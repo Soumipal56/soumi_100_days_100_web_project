@@ -1,4 +1,4 @@
-console.log("Email Validator - Improved version");
+console.log("Email Validator - Final Improved Version");
 
 // ── DOM elements ──
 var submitBtn = document.getElementById("submitBtn");
@@ -13,7 +13,13 @@ var partBreakdown = document.getElementById("partBreakdown");
 var partLocal = document.getElementById("partLocal");
 var partDomain = document.getElementById("partDomain");
 
-// ── All known valid popular domains ──
+var exportBtn        = document.getElementById("exportBtn");
+var themeToggle      = document.getElementById("themeToggle");
+
+// ── Store last result for export ──
+var lastResultData = null;
+
+// ── Known domains ──
 var KNOWN_DOMAINS = [
   "gmail.com",
   "yahoo.com",
@@ -36,7 +42,7 @@ var KNOWN_DOMAINS = [
   "pm.me",
 ];
 
-// ── Exact typo map (common misspellings) ──
+// ── Typo map ──
 var DOMAIN_TYPOS = {
   "gmial.com": "gmail.com",
   "gmai.com": "gmail.com",
@@ -84,7 +90,7 @@ var DOMAIN_TYPOS = {
   "protonmial.com": "protonmail.com",
 };
 
-// ── Disposable/temp email domains ──
+// ── Disposable domains ──
 var DISPOSABLE_DOMAINS = [
   "mailinator.com",
   "guerrillamail.com",
@@ -104,8 +110,7 @@ var DISPOSABLE_DOMAINS = [
   "spamex.com",
 ];
 
-// ── Levenshtein distance (measures how similar two strings are) ──
-// Returns number of edits needed to turn string a into string b
+// ── Levenshtein ──
 function levenshtein(a, b) {
   var m = a.length,
     n = b.length;
@@ -126,8 +131,7 @@ function levenshtein(a, b) {
   return dp[m][n];
 }
 
-// ── Find closest known domain using fuzzy matching ──
-// Returns { suggestion: "gmail.com", distance: 2 } or null
+// ── Find closest domain ──
 function findClosestDomain(domain) {
   // First check exact typo map
   if (DOMAIN_TYPOS[domain]) {
@@ -157,7 +161,7 @@ function findClosestDomain(domain) {
   return null;
 }
 
-// ── Reset all feedback UI ──
+// ── Reset UI ──
 function resetFeedback() {
   suggestionBanner.style.display = "none";
   formatErrors.style.display = "none";
@@ -166,7 +170,7 @@ function resetFeedback() {
   usernameInput.classList.remove("input-valid", "input-invalid");
 }
 
-// ── Client-side format validation ──
+// ── Format validation ──
 function validateFormat(email) {
   var errors = [];
   var atIdx = email.lastIndexOf("@");
@@ -267,7 +271,7 @@ function showPartBreakdown(email, domainIsTypo) {
   partBreakdown.style.display = "flex";
 }
 
-// ── Main validate function ──
+// ── Main function ──
 function handleValidate() {
   var email = usernameInput.value.trim();
   resetFeedback();
